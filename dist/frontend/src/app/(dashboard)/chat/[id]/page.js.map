@@ -1,0 +1,1 @@
+{"version":3,"file":"page.js","sourceRoot":"","sources":["../../../../../../../frontend/src/app/(dashboard)/chat/[id]/page.tsx"],"names":[],"mappings":"AAAA,YAAY,CAAC;;;AAKb,mCAKC;AARD,qEAAiE;AACjE,gDAA4C;AAE5C,SAAwB,gBAAgB;IACtC,MAAM,MAAM,GAAG,IAAA,sBAAS,GAAE,CAAC;IAC3B,MAAM,EAAE,GAAG,MAAM,CAAC,EAAY,CAAC;IAE/B,OAAO,CAAC,8BAAa,CAAC,cAAc,CAAC,CAAC,EAAE,CAAC,EAAG,CAAC;AAC/C,CAAC"}
