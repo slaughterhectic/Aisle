@@ -1,15 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { MessageSquare, Plus, Settings, User, LogOut, Database, Bot } from 'lucide-react';
+import useSWR from 'swr';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuthStore } from '@/store/use-auth-store';
-import { useChat } from '@/hooks/use-chat';
+import api from '@/lib/api';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,10 +20,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+interface Conversation {
+  id: string;
+  title?: string;
+  assistantName: string;
+}
+
+const fetcher = (url: string) => api.get(url).then((r: any) => r.data);
+
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuthStore();
-  const { conversations } = useChat();
+  const { data: conversations } = useSWR<Conversation[]>('/conversations', fetcher);
 
   return (
     <div className="flex h-full w-[280px] flex-col border-r bg-gray-50/40 dark:bg-gray-900/40">
@@ -113,7 +123,7 @@ export function Sidebar() {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout} className="text-red-600">
+            <DropdownMenuItem onClick={() => { logout(); router.push('/login'); }} className="text-red-600">
               <LogOut className="mr-2 h-4 w-4" />
               Log out
             </DropdownMenuItem>

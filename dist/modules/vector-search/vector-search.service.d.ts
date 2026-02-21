@@ -10,7 +10,7 @@ export declare class VectorSearchService {
     private readonly qdrantService;
     private readonly configService;
     private readonly logger;
-    private readonly openai;
+    private readonly embeddingClient;
     private readonly embeddingModel;
     constructor(qdrantService: QdrantService, configService: ConfigService);
     search(tenantId: string, assistantId: string, query: string, topK?: number): Promise<SearchResult[]>;

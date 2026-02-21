@@ -20,24 +20,37 @@ const openai_1 = __importDefault(require("openai"));
 let EmbeddingService = EmbeddingService_1 = class EmbeddingService {
     configService;
     logger = new common_1.Logger(EmbeddingService_1.name);
-    openai;
+    client;
     model;
     constructor(configService) {
         this.configService = configService;
-        this.openai = new openai_1.default({
-            apiKey: this.configService.get('llm.openaiApiKey'),
-        });
-        this.model = this.configService.get('llm.defaultEmbeddingModel') || 'text-embedding-3-small';
+        const defaultProvider = this.configService.get('llm.defaultProvider') || 'openai';
+        const openrouterKey = this.configService.get('llm.openrouterApiKey');
+        const openaiKey = this.configService.get('llm.openaiApiKey');
+        if (defaultProvider === 'openrouter' && openrouterKey && openrouterKey !== 'your-openrouter-api-key') {
+            this.client = new openai_1.default({
+                apiKey: openrouterKey,
+                baseURL: 'https://openrouter.ai/api/v1',
+            });
+            this.model = 'openai/text-embedding-3-small';
+            this.logger.log('EmbeddingService using OpenRouter');
+        }
+        else if (openaiKey && openaiKey !== 'your-openai-api-key') {
+            this.client = new openai_1.default({ apiKey: openaiKey });
+            this.model = this.configService.get('llm.defaultEmbeddingModel') || 'text-embedding-3-small';
+            this.logger.log('EmbeddingService using OpenAI');
+        }
+        else {
+            this.client = new openai_1.default({ apiKey: 'missing' });
+            this.model = 'text-embedding-3-small';
+            this.logger.warn('EmbeddingService: No valid API key found.');
+        }
     }
     async generateEmbeddings(texts) {
-        if (texts.length === 0) {
+        if (texts.length === 0)
             return [];
-        }
         try {
-            const response = await this.openai.embeddings.create({
-                model: this.model,
-                input: texts,
-            });
+            const response = await this.client.embeddings.create({ model: this.model, input: texts });
             return response.data.map((item) => item.embedding);
         }
         catch (error) {

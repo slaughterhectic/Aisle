@@ -22,15 +22,29 @@ let VectorSearchService = VectorSearchService_1 = class VectorSearchService {
     qdrantService;
     configService;
     logger = new common_1.Logger(VectorSearchService_1.name);
-    openai;
+    embeddingClient;
     embeddingModel;
     constructor(qdrantService, configService) {
         this.qdrantService = qdrantService;
         this.configService = configService;
-        this.openai = new openai_1.default({
-            apiKey: this.configService.get('llm.openaiApiKey'),
-        });
-        this.embeddingModel = this.configService.get('llm.defaultEmbeddingModel') || 'text-embedding-3-small';
+        const defaultProvider = this.configService.get('llm.defaultProvider') || 'openai';
+        const openrouterKey = this.configService.get('llm.openrouterApiKey');
+        const openaiKey = this.configService.get('llm.openaiApiKey');
+        if (defaultProvider === 'openrouter' && openrouterKey && openrouterKey !== 'your-openrouter-api-key') {
+            this.embeddingClient = new openai_1.default({
+                apiKey: openrouterKey,
+                baseURL: 'https://openrouter.ai/api/v1',
+            });
+            this.embeddingModel = 'openai/text-embedding-3-small';
+        }
+        else if (openaiKey && openaiKey !== 'your-openai-api-key') {
+            this.embeddingClient = new openai_1.default({ apiKey: openaiKey });
+            this.embeddingModel = this.configService.get('llm.defaultEmbeddingModel') || 'text-embedding-3-small';
+        }
+        else {
+            this.embeddingClient = new openai_1.default({ apiKey: 'missing' });
+            this.embeddingModel = 'text-embedding-3-small';
+        }
     }
     async search(tenantId, assistantId, query, topK = 5) {
         try {
@@ -55,7 +69,7 @@ let VectorSearchService = VectorSearchService_1 = class VectorSearchService {
         await this.qdrantService.deleteByDocumentId(documentId);
     }
     async generateQueryEmbedding(query) {
-        const response = await this.openai.embeddings.create({
+        const response = await this.embeddingClient.embeddings.create({
             model: this.embeddingModel,
             input: query,
         });

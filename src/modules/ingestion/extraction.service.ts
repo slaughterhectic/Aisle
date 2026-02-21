@@ -28,7 +28,7 @@ export class ExtractionService {
   }
 
   /**
-   * Extract text from PDF
+   * Extract text from PDF using pdf-parse v1
    */
   private async extractFromPdf(buffer: Buffer): Promise<string> {
     try {
@@ -36,7 +36,9 @@ export class ExtractionService {
       return data.text;
     } catch (error) {
       this.logger.error('Failed to extract text from PDF', error);
-      throw new Error('Failed to extract text from PDF');
+      throw new Error(
+        `Failed to extract text from PDF: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
