@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 
 async function test() {
-  const mistralKey = "gBiVps6zqrcGwWo0hFLGAfFoEBeS3mwF";
+  const mistralKey = "";
   
   const client = new OpenAI({
     apiKey: mistralKey,

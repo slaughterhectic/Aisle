@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 async function test() {
   const client = new OpenAI({
-    apiKey: "gBiVps6zqrcGwWo0hFLGAfFoEBeS3mwF",
+    apiKey: "",
     baseURL: "https://api.mistral.ai/v1",
   });
   try {
