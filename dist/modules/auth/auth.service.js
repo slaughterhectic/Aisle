@@ -117,16 +117,30 @@ let AuthService = class AuthService {
         return this.generateAuthResponse(user, tenant);
     }
     async login(dto) {
-        const tenant = await this.tenantRepository.findOne({
-            where: { slug: dto.tenantSlug },
-        });
-        if (!tenant) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
+        let tenant = null;
+        let user = null;
+        if (dto.tenantSlug) {
+            tenant = await this.tenantRepository.findOne({
+                where: { slug: dto.tenantSlug },
+            });
+            if (!tenant) {
+                throw new common_1.UnauthorizedException('Invalid credentials');
+            }
+            user = await this.userRepository.findOne({
+                where: { tenantId: tenant.id, email: dto.email },
+            });
         }
-        const user = await this.userRepository.findOne({
-            where: { tenantId: tenant.id, email: dto.email },
-        });
-        if (!user) {
+        else {
+            user = await this.userRepository.findOne({
+                where: { email: dto.email },
+            });
+            if (user) {
+                tenant = await this.tenantRepository.findOne({
+                    where: { id: user.tenantId },
+                });
+            }
+        }
+        if (!user || !tenant) {
             throw new common_1.UnauthorizedException('Invalid credentials');
         }
         const isPasswordValid = await bcrypt.compare(dto.password, user.passwordHash);

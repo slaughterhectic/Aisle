@@ -38,8 +38,8 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false 
           });
           
-          // Token is also handled in api interceptor via localStorage, 
-          // but persist middleware handles syncing state to localStorage too.
+          // Token is also handled in api interceptor via localStorage,
+          localStorage.setItem('accessToken', accessToken);
         } catch (error: any) {
           const message = error.response?.data?.message || 'Login failed';
           set({ error: message, isLoading: false });
@@ -65,6 +65,8 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true, 
             isLoading: false 
           });
+          
+          localStorage.setItem('accessToken', accessToken);
         } catch (error: any) {
            const message = error.response?.data?.message || 'Registration failed';
            set({ error: message, isLoading: false });

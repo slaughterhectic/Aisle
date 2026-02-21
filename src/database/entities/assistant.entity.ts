@@ -16,6 +16,7 @@ import { Tenant } from './tenant.entity';
 export enum LLMProvider {
   OPENAI = 'openai',
   ANTHROPIC = 'anthropic',
+  OPENROUTER = 'openrouter',
 }
 
 /**

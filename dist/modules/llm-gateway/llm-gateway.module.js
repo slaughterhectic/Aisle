@@ -13,13 +13,14 @@ const llm_gateway_service_1 = require("./llm-gateway.service");
 const openai_provider_1 = require("./providers/openai.provider");
 const anthropic_provider_1 = require("./providers/anthropic.provider");
 const prompt_builder_service_1 = require("./prompt-builder.service");
+const openrouter_provider_1 = require("./providers/openrouter.provider");
 let LlmGatewayModule = class LlmGatewayModule {
 };
 exports.LlmGatewayModule = LlmGatewayModule;
 exports.LlmGatewayModule = LlmGatewayModule = __decorate([
     (0, common_1.Module)({
         imports: [config_1.ConfigModule],
-        providers: [llm_gateway_service_1.LlmGatewayService, openai_provider_1.OpenAIProvider, anthropic_provider_1.AnthropicProvider, prompt_builder_service_1.PromptBuilderService],
+        providers: [llm_gateway_service_1.LlmGatewayService, openai_provider_1.OpenAIProvider, anthropic_provider_1.AnthropicProvider, openrouter_provider_1.OpenRouterProvider, prompt_builder_service_1.PromptBuilderService],
         exports: [llm_gateway_service_1.LlmGatewayService, prompt_builder_service_1.PromptBuilderService],
     })
 ], LlmGatewayModule);

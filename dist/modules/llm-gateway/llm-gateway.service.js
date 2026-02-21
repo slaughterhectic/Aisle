@@ -15,19 +15,23 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const openai_provider_1 = require("./providers/openai.provider");
 const anthropic_provider_1 = require("./providers/anthropic.provider");
+const openrouter_provider_1 = require("./providers/openrouter.provider");
 let LlmGatewayService = LlmGatewayService_1 = class LlmGatewayService {
     configService;
     openaiProvider;
     anthropicProvider;
+    openrouterProvider;
     logger = new common_1.Logger(LlmGatewayService_1.name);
     providers = new Map();
     defaultProvider;
-    constructor(configService, openaiProvider, anthropicProvider) {
+    constructor(configService, openaiProvider, anthropicProvider, openrouterProvider) {
         this.configService = configService;
         this.openaiProvider = openaiProvider;
         this.anthropicProvider = anthropicProvider;
+        this.openrouterProvider = openrouterProvider;
         this.providers.set('openai', openaiProvider);
         this.providers.set('anthropic', anthropicProvider);
+        this.providers.set('openrouter', openrouterProvider);
         this.defaultProvider = this.configService.get('llm.defaultProvider') || 'openai';
     }
     async chat(messages, options) {
@@ -63,6 +67,8 @@ let LlmGatewayService = LlmGatewayService_1 = class LlmGatewayService {
                 return this.configService.get('llm.defaultModel') || 'gpt-4o-mini';
             case 'anthropic':
                 return 'claude-3-sonnet-20240229';
+            case 'openrouter':
+                return 'openai/gpt-4o-mini';
             default:
                 return 'gpt-4o-mini';
         }
@@ -83,6 +89,7 @@ exports.LlmGatewayService = LlmGatewayService = LlmGatewayService_1 = __decorate
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [config_1.ConfigService,
         openai_provider_1.OpenAIProvider,
-        anthropic_provider_1.AnthropicProvider])
+        anthropic_provider_1.AnthropicProvider,
+        openrouter_provider_1.OpenRouterProvider])
 ], LlmGatewayService);
 //# sourceMappingURL=llm-gateway.service.js.map

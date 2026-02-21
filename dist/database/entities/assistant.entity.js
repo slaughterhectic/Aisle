@@ -16,6 +16,7 @@ var LLMProvider;
 (function (LLMProvider) {
     LLMProvider["OPENAI"] = "openai";
     LLMProvider["ANTHROPIC"] = "anthropic";
+    LLMProvider["OPENROUTER"] = "openrouter";
 })(LLMProvider || (exports.LLMProvider = LLMProvider = {}));
 let Assistant = class Assistant {
     id;

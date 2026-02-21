@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useChat } from '@/hooks/use-chat';
 import { MessageList } from './message-list';
 import { ChatInput } from './chat-input';
-import { Button } from '@/components/ui/button';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -20,7 +19,7 @@ export function ChatInterface({ conversationId }: ChatInterfaceProps) {
     messagesError, 
     sendMessage, 
     isLoading 
-  } = useChat(conversationId);
+  } = useChat({ conversationId });
   
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -40,7 +39,6 @@ export function ChatInterface({ conversationId }: ChatInterfaceProps) {
       }
     } catch (error) {
       console.error('Send failed', error);
-      // Toast error here ideally
     }
   };
 

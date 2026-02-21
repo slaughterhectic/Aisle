@@ -64,6 +64,16 @@ services:
       timeout: 20s
       retries: 3
 
+  # Database UI (Adminer)
+  adminer:
+    image: adminer:latest
+    container_name: aisle-adminer
+    restart: always
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+
   # Application (for production use)
   app:
     build:

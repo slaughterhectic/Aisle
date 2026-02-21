@@ -31,6 +31,7 @@ declare const _default: () => {
     llm: {
         openaiApiKey: string | undefined;
         anthropicApiKey: string | undefined;
+        openrouterApiKey: string | undefined;
         defaultProvider: string;
         defaultModel: string;
         defaultEmbeddingModel: string;

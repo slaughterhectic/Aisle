@@ -96,19 +96,35 @@ export class AuthService {
    * Login user
    */
   async login(dto: LoginDto): Promise<AuthResponse> {
-    // Find tenant
-    const tenant = await this.tenantRepository.findOne({
-      where: { slug: dto.tenantSlug },
-    });
-    if (!tenant) {
-      throw new UnauthorizedException('Invalid credentials');
+    let tenant: Tenant | null = null;
+    let user: User | null = null;
+
+    if (dto.tenantSlug) {
+      // Find tenant by slug
+      tenant = await this.tenantRepository.findOne({
+        where: { slug: dto.tenantSlug },
+      });
+      if (!tenant) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+
+      // Find user in that tenant
+      user = await this.userRepository.findOne({
+        where: { tenantId: tenant.id, email: dto.email },
+      });
+    } else {
+      // No tenantSlug provided — find user by email (pick the first match)
+      user = await this.userRepository.findOne({
+        where: { email: dto.email },
+      });
+      if (user) {
+        tenant = await this.tenantRepository.findOne({
+          where: { id: user.tenantId },
+        });
+      }
     }
 
-    // Find user
-    const user = await this.userRepository.findOne({
-      where: { tenantId: tenant.id, email: dto.email },
-    });
-    if (!user) {
+    if (!user || !tenant) {
       throw new UnauthorizedException('Invalid credentials');
     }
 

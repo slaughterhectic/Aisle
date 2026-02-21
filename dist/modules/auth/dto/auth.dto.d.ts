@@ -9,7 +9,7 @@ export declare class RegisterDto {
 export declare class LoginDto {
     email: string;
     password: string;
-    tenantSlug: string;
+    tenantSlug?: string;
 }
 export declare class RefreshTokenDto {
     refreshToken: string;

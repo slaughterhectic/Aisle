@@ -41,10 +41,11 @@ export class LoginDto {
   @IsString()
   password: string;
 
-  /** Tenant slug for multi-tenant login */
+  /** Tenant slug for multi-tenant login (optional - if not provided, finds user by email) */
+  @IsOptional()
   @IsString()
   @MaxLength(100)
-  tenantSlug: string;
+  tenantSlug?: string;
 }
 
 /**
