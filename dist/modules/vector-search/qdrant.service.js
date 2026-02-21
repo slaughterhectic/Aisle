@@ -71,7 +71,7 @@ let QdrantService = QdrantService_1 = class QdrantService {
             })),
         });
     }
-    async search(vector, tenantId, assistantId, limit = 5, scoreThreshold = 0.7) {
+    async search(vector, tenantId, assistantId, limit = 5, scoreThreshold = 0.3) {
         await this.ensureCollectionExists();
         const filter = {
             must: [{ key: 'tenantId', match: { value: tenantId } }],

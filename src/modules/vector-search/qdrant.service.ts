@@ -91,7 +91,7 @@ export class QdrantService implements OnModuleInit {
     tenantId: string,
     assistantId?: string,
     limit: number = 5,
-    scoreThreshold: number = 0.7,
+    scoreThreshold: number = 0.3,
   ): Promise<{ id: string; score: number; payload: Record<string, any> }[]> {
     await this.ensureCollectionExists();
 
