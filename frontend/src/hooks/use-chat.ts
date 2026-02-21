@@ -137,6 +137,24 @@ export function useChat(options?: { conversationId?: string }) {
     [conversationId, mutateConversations, mutateMessages],
   );
 
+  const renameConversation = useCallback(async (id: string, newTitle: string) => {
+    try {
+      await api.post(`/conversations/${id}/update`, { title: newTitle });
+      mutateConversations();
+    } catch (e) {
+      console.error('Failed to rename', e);
+    }
+  }, [mutateConversations]);
+
+  const deleteConversation = useCallback(async (id: string) => {
+    try {
+      await api.post(`/conversations/${id}/delete`);
+      mutateConversations();
+    } catch (e) {
+      console.error('Failed to delete', e);
+    }
+  }, [mutateConversations]);
+
   return {
     conversations,
     conversationsError,
@@ -145,5 +163,7 @@ export function useChat(options?: { conversationId?: string }) {
     sendMessage,
     isLoading,
     mutateConversations,
+    renameConversation,
+    deleteConversation,
   };
 }

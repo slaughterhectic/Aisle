@@ -31,6 +31,13 @@ let ConversationsController = class ConversationsController {
     async findAll(tenant) {
         return this.conversationsService.findAll(tenant);
     }
+    async update(tenant, id, dto) {
+        return this.conversationsService.update(tenant, id, dto.title);
+    }
+    async delete(tenant, id) {
+        await this.conversationsService.delete(tenant, id);
+        return { success: true };
+    }
     async getMessages(tenant, id) {
         return this.conversationsService.getMessages(tenant, id);
     }
@@ -54,6 +61,23 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ConversationsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Post)(':id/update'),
+    __param(0, (0, tenant_decorator_1.Tenant)()),
+    __param(1, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, conversation_dto_1.UpdateConversationDto]),
+    __metadata("design:returntype", Promise)
+], ConversationsController.prototype, "update", null);
+__decorate([
+    (0, common_1.Post)(':id/delete'),
+    __param(0, (0, tenant_decorator_1.Tenant)()),
+    __param(1, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], ConversationsController.prototype, "delete", null);
 __decorate([
     (0, common_1.Get)(':id/messages'),
     __param(0, (0, tenant_decorator_1.Tenant)()),

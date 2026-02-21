@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChatMessageDto = exports.CreateConversationDto = void 0;
+exports.ChatMessageDto = exports.UpdateConversationDto = exports.CreateConversationDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateConversationDto {
     assistantId;
@@ -26,6 +26,16 @@ __decorate([
     (0, class_validator_1.MaxLength)(255),
     __metadata("design:type", String)
 ], CreateConversationDto.prototype, "title", void 0);
+class UpdateConversationDto {
+    title;
+}
+exports.UpdateConversationDto = UpdateConversationDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(255),
+    __metadata("design:type", String)
+], UpdateConversationDto.prototype, "title", void 0);
 class ChatMessageDto {
     message;
 }

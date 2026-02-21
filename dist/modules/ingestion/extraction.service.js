@@ -17,16 +17,21 @@ const mammoth_1 = __importDefault(require("mammoth"));
 let ExtractionService = ExtractionService_1 = class ExtractionService {
     logger = new common_1.Logger(ExtractionService_1.name);
     async extractText(buffer, mimeType) {
+        let text = '';
         switch (mimeType) {
             case 'application/pdf':
-                return this.extractFromPdf(buffer);
+                text = await this.extractFromPdf(buffer);
+                break;
             case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                return this.extractFromDocx(buffer);
+                text = await this.extractFromDocx(buffer);
+                break;
             case 'text/plain':
-                return this.extractFromText(buffer);
+                text = this.extractFromText(buffer);
+                break;
             default:
                 throw new Error(`Unsupported MIME type: ${mimeType}`);
         }
+        return text.replace(/\0/g, '');
     }
     async extractFromPdf(buffer) {
         try {

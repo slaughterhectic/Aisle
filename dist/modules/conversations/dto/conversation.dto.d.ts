@@ -2,6 +2,9 @@ export declare class CreateConversationDto {
     assistantId: string;
     title?: string;
 }
+export declare class UpdateConversationDto {
+    title?: string;
+}
 export declare class ChatMessageDto {
     message: string;
 }

@@ -34,6 +34,7 @@ exports.default = () => ({
         openaiApiKey: process.env.OPENAI_API_KEY,
         anthropicApiKey: process.env.ANTHROPIC_API_KEY,
         openrouterApiKey: process.env.OPENROUTER_API_KEY,
+        mistralApiKey: process.env.MISTRAL_API_KEY,
         defaultProvider: process.env.DEFAULT_LLM_PROVIDER || 'openai',
         defaultModel: process.env.DEFAULT_LLM_MODEL || 'gpt-4o-mini',
         defaultEmbeddingModel: process.env.DEFAULT_EMBEDDING_MODEL || 'text-embedding-3-small',

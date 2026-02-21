@@ -17,10 +17,17 @@ export default function DashboardLayout({
 
   useEffect(() => {
     setIsClient(true);
-    if (!isLoading && !isAuthenticated) {
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
+    // Direct token check to avoid race conditions with Zustand hydration
+    const token = localStorage.getItem('accessToken');
+    if (!token && !isAuthenticated && !isLoading) {
       router.push('/login');
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [isClient, isLoading, isAuthenticated, router]);
 
   // Prevent flash of unauthenticated content
   if (!isClient || isLoading) {

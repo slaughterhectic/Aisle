@@ -86,6 +86,32 @@ export class ConversationsService {
   }
 
   /**
+   * Update a conversation (e.g., rename title)
+   */
+  async update(tenant: TenantContext, id: string, title?: string): Promise<ConversationResponse> {
+    const conversation = await this.findOne(tenant, id);
+    if (title !== undefined) {
+      conversation.title = title;
+      await this.conversationRepository.save(conversation);
+    }
+    return this.toConversationResponse(conversation, conversation.assistant?.name || 'Unknown');
+  }
+
+  /**
+   * Delete a conversation
+   */
+  async delete(tenant: TenantContext, id: string): Promise<void> {
+    const conversation = await this.findOne(tenant, id);
+    
+    // Clear redis session if exists
+    await this.sessionService.deleteSession(id).catch((err: any) => {
+      this.logger.warn(`Failed to clear session for deleted conversation ${id}`);
+    });
+
+    await this.conversationRepository.remove(conversation);
+  }
+
+  /**
    * Get messages for a conversation
    */
   async getMessages(tenant: TenantContext, conversationId: string): Promise<MessageResponse[]> {

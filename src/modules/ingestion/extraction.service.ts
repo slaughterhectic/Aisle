@@ -15,16 +15,23 @@ export class ExtractionService {
    * Extract text from a document based on MIME type
    */
   async extractText(buffer: Buffer, mimeType: string): Promise<string> {
+    let text = '';
     switch (mimeType) {
       case 'application/pdf':
-        return this.extractFromPdf(buffer);
+        text = await this.extractFromPdf(buffer);
+        break;
       case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-        return this.extractFromDocx(buffer);
+        text = await this.extractFromDocx(buffer);
+        break;
       case 'text/plain':
-        return this.extractFromText(buffer);
+        text = this.extractFromText(buffer);
+        break;
       default:
         throw new Error(`Unsupported MIME type: ${mimeType}`);
     }
+    
+    // PostgreSQL does not support null characters (0x00) in text fields.
+    return text.replace(/\0/g, '');
   }
 
   /**

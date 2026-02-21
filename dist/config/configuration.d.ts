@@ -32,6 +32,7 @@ declare const _default: () => {
         openaiApiKey: string | undefined;
         anthropicApiKey: string | undefined;
         openrouterApiKey: string | undefined;
+        mistralApiKey: string | undefined;
         defaultProvider: string;
         defaultModel: string;
         defaultEmbeddingModel: string;

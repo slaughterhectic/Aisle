@@ -14,6 +14,16 @@ export class CreateConversationDto {
 }
 
 /**
+ * DTO for updating an existing conversation
+ */
+export class UpdateConversationDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  title?: string;
+}
+
+/**
  * DTO for sending a chat message
  */
 export class ChatMessageDto {

@@ -2,7 +2,8 @@ import { Tenant } from './tenant.entity';
 export declare enum LLMProvider {
     OPENAI = "openai",
     ANTHROPIC = "anthropic",
-    OPENROUTER = "openrouter"
+    OPENROUTER = "openrouter",
+    MISTRAL = "mistral"
 }
 export declare class Assistant {
     id: string;

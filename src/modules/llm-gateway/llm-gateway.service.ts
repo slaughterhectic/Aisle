@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { OpenAIProvider } from './providers/openai.provider';
 import { AnthropicProvider } from './providers/anthropic.provider';
 import { OpenRouterProvider } from './providers/openrouter.provider';
+import { MistralProvider } from './providers/mistral.provider';
 import { LLMProvider, LLMMessage, LLMOptions, LLMResponse } from './interfaces/llm-provider.interface';
 import { LLMProvider as LLMProviderEnum } from '../../database/entities/assistant.entity';
 
@@ -23,11 +24,13 @@ export class LlmGatewayService {
     private readonly openaiProvider: OpenAIProvider,
     private readonly anthropicProvider: AnthropicProvider,
     private readonly openrouterProvider: OpenRouterProvider,
+    private readonly mistralProvider: MistralProvider,
   ) {
     // Register providers
     this.providers.set('openai', openaiProvider);
     this.providers.set('anthropic', anthropicProvider);
     this.providers.set('openrouter', openrouterProvider);
+    this.providers.set('mistral', mistralProvider);
 
     this.defaultProvider = this.configService.get<string>('llm.defaultProvider') || 'openai';
   }
@@ -90,6 +93,8 @@ export class LlmGatewayService {
         return 'claude-3-sonnet-20240229';
       case 'openrouter':
         return 'openai/gpt-4o-mini';
+      case 'mistral':
+        return 'mistral-small-latest';
       default:
         return 'gpt-4o-mini';
     }

@@ -17,6 +17,7 @@ export enum LLMProvider {
   OPENAI = 'openai',
   ANTHROPIC = 'anthropic',
   OPENROUTER = 'openrouter',
+  MISTRAL = 'mistral',
 }
 
 /**

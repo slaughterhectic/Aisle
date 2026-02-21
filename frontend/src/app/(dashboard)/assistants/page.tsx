@@ -147,12 +147,20 @@ export default function AssistantsPage() {
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Provider</label>
                   <select
                     value={provider}
-                    onChange={(e) => setProvider(e.target.value)}
+                    onChange={(e) => {
+                      const newProvider = e.target.value;
+                      setProvider(newProvider);
+                      if (newProvider === 'mistral') setModel('mistral-small-latest');
+                      else if (newProvider === 'anthropic') setModel('claude-3-sonnet-20240229');
+                      else if (newProvider === 'openrouter') setModel('openai/gpt-4o-mini');
+                      else setModel('gpt-4o-mini');
+                    }}
                     className="mt-1 h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                   >
                     <option value="openrouter">OpenRouter</option>
                     <option value="openai">OpenAI</option>
                     <option value="anthropic">Anthropic</option>
+                    <option value="mistral">Mistral AI</option>
                   </select>
                 </div>
                 <div>

@@ -71,6 +71,21 @@ let ConversationsService = ConversationsService_1 = class ConversationsService {
         }
         return conversation;
     }
+    async update(tenant, id, title) {
+        const conversation = await this.findOne(tenant, id);
+        if (title !== undefined) {
+            conversation.title = title;
+            await this.conversationRepository.save(conversation);
+        }
+        return this.toConversationResponse(conversation, conversation.assistant?.name || 'Unknown');
+    }
+    async delete(tenant, id) {
+        const conversation = await this.findOne(tenant, id);
+        await this.sessionService.deleteSession(id).catch((err) => {
+            this.logger.warn(`Failed to clear session for deleted conversation ${id}`);
+        });
+        await this.conversationRepository.remove(conversation);
+    }
     async getMessages(tenant, conversationId) {
         await this.findOne(tenant, conversationId);
         const messages = await this.messageRepository.find({

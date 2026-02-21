@@ -42,43 +42,48 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
   };
 
   return (
-    <div className="p-4 border-t bg-white dark:bg-gray-950">
-      <form onSubmit={handleSubmit} className="relative flex items-end gap-2 max-w-3xl mx-auto">
+    <div className="p-4 md:p-6 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 sticky bottom-0 z-10 w-full shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)]">
+      <form onSubmit={handleSubmit} className="relative flex items-end gap-3 max-w-4xl mx-auto bg-slate-50 dark:bg-slate-900 rounded-3xl p-2 pl-4 border border-slate-200/80 dark:border-slate-800 shadow-sm transition-all focus-within:shadow-md focus-within:border-purple-300 dark:focus-within:border-purple-700/50 focus-within:ring-4 focus-within:ring-purple-500/10 dark:focus-within:ring-purple-500/10">
         <Button 
           type="button" 
           variant="ghost" 
           size="icon" 
-          className="shrink-0 text-gray-500 hover:text-gray-900 dark:hover:text-gray-100"
+          className="shrink-0 mb-0.5 text-slate-400 hover:text-purple-600 hover:bg-purple-100 rounded-full dark:hover:text-purple-400 dark:hover:bg-purple-500/20 transition-colors"
         >
           <Paperclip className="h-5 w-5" />
           <span className="sr-only">Attach file</span>
         </Button>
         
-        <div className="relative flex-1 min-w-0">
+        <div className="relative flex-1 min-w-0 flex items-center mb-0.5">
           <textarea
             ref={textareaRef}
             value={input}
             onChange={handleInput}
             onKeyDown={handleKeyDown}
-            placeholder="Send a message..."
-            className="w-full resize-none rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 min-h-[40px] max-h-[200px]"
+            placeholder="Type your message..."
+            className="w-full resize-none border-0 bg-transparent px-2 py-3 text-[15px] focus:ring-0 placeholder:text-slate-400 dark:text-slate-100 disabled:cursor-not-allowed disabled:opacity-50 min-h-[44px] max-h-[200px] outline-none"
             rows={1}
             disabled={isLoading}
           />
         </div>
 
-        <Button type="submit" size="icon" disabled={!input.trim() || isLoading}>
+        <Button 
+          type="submit" 
+          size="icon" 
+          disabled={!input.trim() || isLoading}
+          className="shrink-0 mb-0.5 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white hover:opacity-90 shadow-sm transition-all shadow-purple-500/20 disabled:opacity-50 h-11 w-11 border-0"
+        >
           {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
-            <SendHorizontal className="h-4 w-4" />
+            <SendHorizontal className="h-5 w-5 ml-0.5" />
           )}
           <span className="sr-only">Send</span>
         </Button>
       </form>
-      <div className="text-center mt-2">
-        <p className="text-xs text-gray-400">
-          Aisle can make mistakes. Consider checking important information.
+      <div className="text-center mt-3 max-w-4xl mx-auto">
+        <p className="text-[11px] text-slate-400 font-medium tracking-wide">
+          Aisle AI might generate inaccurate information. Please verify important details.
         </p>
       </div>
     </div>

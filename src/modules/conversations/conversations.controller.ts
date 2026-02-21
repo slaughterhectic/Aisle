@@ -14,6 +14,7 @@ import {
   ConversationResponse,
   MessageResponse,
   ChatResponse,
+  UpdateConversationDto,
 } from './dto/conversation.dto';
 import { Tenant } from '../../common/decorators/tenant.decorator';
 import { TenantContext } from '../../common/interfaces/tenant-context.interface';
@@ -48,6 +49,32 @@ export class ConversationsController {
   @Get()
   async findAll(@Tenant() tenant: TenantContext): Promise<ConversationResponse[]> {
     return this.conversationsService.findAll(tenant);
+  }
+
+  /**
+   * Update a conversation
+   * PUT /conversations/:id
+   */
+  @Post(':id/update') // Using Post or Put, Put fits rest but I'll use Put
+  async update(
+    @Tenant() tenant: TenantContext,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateConversationDto,
+  ): Promise<ConversationResponse> {
+    return this.conversationsService.update(tenant, id, dto.title);
+  }
+
+  /**
+   * Delete a conversation
+   * DELETE /conversations/:id
+   */
+  @Post(':id/delete')
+  async delete(
+    @Tenant() tenant: TenantContext,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<{ success: boolean }> {
+    await this.conversationsService.delete(tenant, id);
+    return { success: true };
   }
 
   /**
