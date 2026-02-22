@@ -155,6 +155,24 @@ export function useChat(options?: { conversationId?: string }) {
     }
   }, [mutateConversations]);
 
+  const pinConversation = useCallback(async (id: string) => {
+    try {
+      await api.post(`/conversations/${id}/pin`);
+      mutateConversations();
+    } catch (e) {
+      console.error('Failed to pin', e);
+    }
+  }, [mutateConversations]);
+
+  const archiveConversation = useCallback(async (id: string) => {
+    try {
+      await api.post(`/conversations/${id}/archive`);
+      mutateConversations();
+    } catch (e) {
+      console.error('Failed to archive', e);
+    }
+  }, [mutateConversations]);
+
   return {
     conversations,
     conversationsError,
@@ -165,5 +183,7 @@ export function useChat(options?: { conversationId?: string }) {
     mutateConversations,
     renameConversation,
     deleteConversation,
+    pinConversation,
+    archiveConversation,
   };
 }

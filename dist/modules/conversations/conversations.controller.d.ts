@@ -12,6 +12,8 @@ export declare class ConversationsController {
     delete(tenant: TenantContext, id: string): Promise<{
         success: boolean;
     }>;
+    togglePin(tenant: TenantContext, id: string): Promise<ConversationResponse>;
+    toggleArchive(tenant: TenantContext, id: string): Promise<ConversationResponse>;
     getMessages(tenant: TenantContext, id: string): Promise<MessageResponse[]>;
     chat(tenant: TenantContext, id: string, dto: ChatMessageDto): Promise<ChatResponse>;
 }

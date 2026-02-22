@@ -28,7 +28,7 @@ export class ConversationsController {
   constructor(
     private readonly conversationsService: ConversationsService,
     private readonly chatService: ChatService,
-  ) {}
+  ) { }
 
   /**
    * Create a new conversation
@@ -75,6 +75,30 @@ export class ConversationsController {
   ): Promise<{ success: boolean }> {
     await this.conversationsService.delete(tenant, id);
     return { success: true };
+  }
+
+  /**
+   * Toggle pin status
+   * POST /conversations/:id/pin
+   */
+  @Post(':id/pin')
+  async togglePin(
+    @Tenant() tenant: TenantContext,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ConversationResponse> {
+    return this.conversationsService.togglePin(tenant, id);
+  }
+
+  /**
+   * Toggle archive status
+   * POST /conversations/:id/archive
+   */
+  @Post(':id/archive')
+  async toggleArchive(
+    @Tenant() tenant: TenantContext,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ConversationResponse> {
+    return this.conversationsService.toggleArchive(tenant, id);
   }
 
   /**

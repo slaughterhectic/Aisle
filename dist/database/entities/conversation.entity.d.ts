@@ -14,6 +14,8 @@ export declare class Conversation {
     summary: string;
     totalTokensUsed: number;
     isActive: boolean;
+    isPinned: boolean;
+    isArchived: boolean;
     messages: Message[];
     createdAt: Date;
 }

@@ -35,7 +35,7 @@ export class ChatService {
     private readonly vectorSearchService: VectorSearchService,
     private readonly llmGatewayService: LlmGatewayService,
     private readonly usageService: UsageService,
-  ) {}
+  ) { }
 
   /**
    * Process a chat message through the complete flow
@@ -149,6 +149,30 @@ export class ChatService {
     const totalTokens = llmResponse.usage.promptTokens + llmResponse.usage.completionTokens;
     await this.conversationsService.updateTokenCount(conversationId, totalTokens);
 
+    // Auto-generate title for new conversations
+    if (!conversation.title || conversation.title === 'New Conversation') {
+      try {
+        const titlePrompt: LLMMessage[] = [
+          { role: 'system', content: 'Generate a very brief, concise title (max 4 words) for a new chat about this topic. Return ONLY the title text, no quotes, no markdown, no extra words.' },
+          { role: 'user', content: dto.message }
+        ];
+
+        const titleResponse = await this.llmGatewayService.chat(titlePrompt, {
+          provider: assistant.provider,
+          model: assistant.model,
+          temperature: 0.3,
+          maxTokens: 15,
+        });
+
+        const generatedTitle = titleResponse.content.replace(/["']/g, '').trim();
+        if (generatedTitle) {
+          await this.conversationsService.update(tenant, conversationId, generatedTitle);
+        }
+      } catch (err) {
+        this.logger.error(`Failed to generate auto-title for conversation ${conversationId}`, err);
+      }
+    }
+
     // Step 9: Log usage
     const latencyMs = Date.now() - startTime;
     await this.usageService.logUsage({
@@ -194,7 +218,7 @@ export class ChatService {
    * Build RAG context string from chunks
    */
   private buildRagContext(chunks: ContextChunk[]): string {
-    const contextParts = chunks.map((chunk, index) => 
+    const contextParts = chunks.map((chunk, index) =>
       `[Context ${index + 1}]:\n${chunk.content}`
     );
     return contextParts.join('\n\n');

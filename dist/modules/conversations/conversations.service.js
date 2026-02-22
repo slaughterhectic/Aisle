@@ -86,6 +86,21 @@ let ConversationsService = ConversationsService_1 = class ConversationsService {
         });
         await this.conversationRepository.remove(conversation);
     }
+    async togglePin(tenant, id) {
+        const conversation = await this.findOne(tenant, id);
+        conversation.isPinned = !conversation.isPinned;
+        await this.conversationRepository.save(conversation);
+        return this.toConversationResponse(conversation, conversation.assistant?.name || 'Unknown');
+    }
+    async toggleArchive(tenant, id) {
+        const conversation = await this.findOne(tenant, id);
+        conversation.isArchived = !conversation.isArchived;
+        if (conversation.isArchived) {
+            conversation.isPinned = false;
+        }
+        await this.conversationRepository.save(conversation);
+        return this.toConversationResponse(conversation, conversation.assistant?.name || 'Unknown');
+    }
     async getMessages(tenant, conversationId) {
         await this.findOne(tenant, conversationId);
         const messages = await this.messageRepository.find({
@@ -124,6 +139,8 @@ let ConversationsService = ConversationsService_1 = class ConversationsService {
             userId: conversation.userId,
             title: conversation.title,
             totalTokensUsed: conversation.totalTokensUsed,
+            isPinned: conversation.isPinned ?? false,
+            isArchived: conversation.isArchived ?? false,
             createdAt: conversation.createdAt,
         };
     }

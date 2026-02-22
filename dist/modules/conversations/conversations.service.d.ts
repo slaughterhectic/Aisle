@@ -17,6 +17,8 @@ export declare class ConversationsService {
     findOne(tenant: TenantContext, id: string): Promise<Conversation>;
     update(tenant: TenantContext, id: string, title?: string): Promise<ConversationResponse>;
     delete(tenant: TenantContext, id: string): Promise<void>;
+    togglePin(tenant: TenantContext, id: string): Promise<ConversationResponse>;
+    toggleArchive(tenant: TenantContext, id: string): Promise<ConversationResponse>;
     getMessages(tenant: TenantContext, conversationId: string): Promise<MessageResponse[]>;
     saveMessage(tenantId: string, conversationId: string, role: MessageRole, content: string, tokensUsed?: number, model?: string, contextChunks?: any[]): Promise<Message>;
     updateTokenCount(conversationId: string, tokensUsed: number): Promise<void>;
