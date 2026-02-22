@@ -15,6 +15,8 @@ export interface ConversationResponse {
     userId: string;
     title: string | null;
     totalTokensUsed: number;
+    isPinned: boolean;
+    isArchived: boolean;
     createdAt: Date;
 }
 export interface MessageResponse {

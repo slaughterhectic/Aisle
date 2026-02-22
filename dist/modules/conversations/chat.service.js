@@ -96,6 +96,27 @@ let ChatService = ChatService_1 = class ChatService {
         });
         const totalTokens = llmResponse.usage.promptTokens + llmResponse.usage.completionTokens;
         await this.conversationsService.updateTokenCount(conversationId, totalTokens);
+        if (!conversation.title || conversation.title === 'New Conversation') {
+            try {
+                const titlePrompt = [
+                    { role: 'system', content: 'Generate a very brief, concise title (max 4 words) for a new chat about this topic. Return ONLY the title text, no quotes, no markdown, no extra words.' },
+                    { role: 'user', content: dto.message }
+                ];
+                const titleResponse = await this.llmGatewayService.chat(titlePrompt, {
+                    provider: assistant.provider,
+                    model: assistant.model,
+                    temperature: 0.3,
+                    maxTokens: 15,
+                });
+                const generatedTitle = titleResponse.content.replace(/["']/g, '').trim();
+                if (generatedTitle) {
+                    await this.conversationsService.update(tenant, conversationId, generatedTitle);
+                }
+            }
+            catch (err) {
+                this.logger.error(`Failed to generate auto-title for conversation ${conversationId}`, err);
+            }
+        }
         const latencyMs = Date.now() - startTime;
         await this.usageService.logUsage({
             tenantId: tenant.tenantId,

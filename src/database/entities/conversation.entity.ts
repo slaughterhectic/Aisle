@@ -61,6 +61,12 @@ export class Conversation {
   @Column({ default: true })
   isActive: boolean;
 
+  @Column({ default: false })
+  isPinned: boolean;
+
+  @Column({ default: false })
+  isArchived: boolean;
+
   @OneToMany(() => Message, (message) => message.conversation)
   messages: Message[];
 

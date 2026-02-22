@@ -23,7 +23,7 @@ export class ConversationsService {
     private readonly messageRepository: Repository<Message>,
     private readonly assistantsService: AssistantsService,
     private readonly sessionService: SessionService,
-  ) {}
+  ) { }
 
   /**
    * Create a new conversation
@@ -102,13 +102,37 @@ export class ConversationsService {
    */
   async delete(tenant: TenantContext, id: string): Promise<void> {
     const conversation = await this.findOne(tenant, id);
-    
+
     // Clear redis session if exists
     await this.sessionService.deleteSession(id).catch((err: any) => {
       this.logger.warn(`Failed to clear session for deleted conversation ${id}`);
     });
 
     await this.conversationRepository.remove(conversation);
+  }
+
+  /**
+   * Toggle pin status of a conversation
+   */
+  async togglePin(tenant: TenantContext, id: string): Promise<ConversationResponse> {
+    const conversation = await this.findOne(tenant, id);
+    conversation.isPinned = !conversation.isPinned;
+    await this.conversationRepository.save(conversation);
+    return this.toConversationResponse(conversation, conversation.assistant?.name || 'Unknown');
+  }
+
+  /**
+   * Toggle archive status of a conversation
+   */
+  async toggleArchive(tenant: TenantContext, id: string): Promise<ConversationResponse> {
+    const conversation = await this.findOne(tenant, id);
+    conversation.isArchived = !conversation.isArchived;
+    // Unpin if archiving
+    if (conversation.isArchived) {
+      conversation.isPinned = false;
+    }
+    await this.conversationRepository.save(conversation);
+    return this.toConversationResponse(conversation, conversation.assistant?.name || 'Unknown');
   }
 
   /**
@@ -181,6 +205,8 @@ export class ConversationsService {
       userId: conversation.userId,
       title: conversation.title,
       totalTokensUsed: conversation.totalTokensUsed,
+      isPinned: conversation.isPinned ?? false,
+      isArchived: conversation.isArchived ?? false,
       createdAt: conversation.createdAt,
     };
   }

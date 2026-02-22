@@ -38,6 +38,12 @@ let ConversationsController = class ConversationsController {
         await this.conversationsService.delete(tenant, id);
         return { success: true };
     }
+    async togglePin(tenant, id) {
+        return this.conversationsService.togglePin(tenant, id);
+    }
+    async toggleArchive(tenant, id) {
+        return this.conversationsService.toggleArchive(tenant, id);
+    }
     async getMessages(tenant, id) {
         return this.conversationsService.getMessages(tenant, id);
     }
@@ -78,6 +84,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], ConversationsController.prototype, "delete", null);
+__decorate([
+    (0, common_1.Post)(':id/pin'),
+    __param(0, (0, tenant_decorator_1.Tenant)()),
+    __param(1, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], ConversationsController.prototype, "togglePin", null);
+__decorate([
+    (0, common_1.Post)(':id/archive'),
+    __param(0, (0, tenant_decorator_1.Tenant)()),
+    __param(1, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], ConversationsController.prototype, "toggleArchive", null);
 __decorate([
     (0, common_1.Get)(':id/messages'),
     __param(0, (0, tenant_decorator_1.Tenant)()),

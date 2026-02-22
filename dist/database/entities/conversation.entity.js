@@ -27,6 +27,8 @@ let Conversation = class Conversation {
     summary;
     totalTokensUsed;
     isActive;
+    isPinned;
+    isArchived;
     messages;
     createdAt;
 };
@@ -79,6 +81,14 @@ __decorate([
     (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], Conversation.prototype, "isActive", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], Conversation.prototype, "isPinned", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], Conversation.prototype, "isArchived", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => message_entity_1.Message, (message) => message.conversation),
     __metadata("design:type", Array)
