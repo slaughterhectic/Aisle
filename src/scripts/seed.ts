@@ -95,6 +95,40 @@ async function seed() {
     console.log(`Assistant ${assistantName} already exists`);
   }
 
+  // 4. Create System Tenant and Super Admin
+  const systemTenantSlug = 'system';
+  let systemTenant = await tenantRepo.findOne({ where: { slug: systemTenantSlug } });
+  if (!systemTenant) {
+    systemTenant = tenantRepo.create({
+      name: 'System Administration',
+      slug: systemTenantSlug,
+      settings: {},
+      isActive: true,
+    });
+    await tenantRepo.save(systemTenant);
+    console.log(`Created System Tenant: ${systemTenant.name} (${systemTenant.id})`);
+  }
+
+  const superAdminEmail = 'superadmin@system.com';
+  let superAdminUser = await userRepo.findOne({ where: { email: superAdminEmail } });
+  if (!superAdminUser) {
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash('superadmin123', salt);
+    
+    superAdminUser = userRepo.create({
+      tenantId: systemTenant.id,
+      email: superAdminEmail,
+      name: 'Super Admin',
+      passwordHash,
+      role: UserRole.SUPER_ADMIN,
+      isActive: true,
+    });
+    await userRepo.save(superAdminUser);
+    console.log(`Created Super Admin: ${superAdminUser.email} (Password: superadmin123)`);
+  } else {
+    console.log(`Super Admin ${superAdminEmail} already exists`);
+  }
+
   await dataSource.destroy();
 }
 

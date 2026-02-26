@@ -5,6 +5,7 @@ export interface TenantContext {
     email: string;
 }
 export declare enum UserRole {
+    SUPER_ADMIN = "super_admin",
     ADMIN = "admin",
     MANAGER = "manager",
     USER = "user"

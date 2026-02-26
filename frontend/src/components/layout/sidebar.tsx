@@ -7,7 +7,7 @@ import {
   Plus, Settings, LogOut, Database, Bot,
   MoreHorizontal, Pencil, Trash2, Pin, Archive,
   Share2, ChevronDown, ChevronRight, PinOff, ArchiveRestore,
-  Search, X,
+  Search, X, Shield,
 } from 'lucide-react';
 import useSWR from 'swr';
 
@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuthStore } from '@/store/use-auth-store';
+import { UserRole } from '@/types';
 import api from '@/lib/api';
 import {
   DropdownMenu,
@@ -441,24 +442,38 @@ export function Sidebar() {
         <div className="px-3 py-2 border-t border-slate-200/60 dark:border-slate-800">
           <SectionHeader label="Manage" />
           <nav className="space-y-px mt-0.5">
-            <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
-              <Link href="/assistants">
-                <Bot className="mr-2 h-3.5 w-3.5" />
-                Assistants
-              </Link>
-            </Button>
-            <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
-              <Link href="/knowledge">
-                <Database className="mr-2 h-3.5 w-3.5" />
-                Knowledge Base
-              </Link>
-            </Button>
-            <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
-              <Link href="/settings">
-                <Settings className="mr-2 h-3.5 w-3.5" />
-                Settings
-              </Link>
-            </Button>
+            {(user?.role === UserRole.SUPER_ADMIN || user?.role === UserRole.ADMIN || user?.role === UserRole.MANAGER) && (
+              <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
+                <Link href="/assistants">
+                  <Bot className="mr-2 h-3.5 w-3.5" />
+                  Assistants
+                </Link>
+              </Button>
+            )}
+            {(user?.role === UserRole.SUPER_ADMIN || user?.role === UserRole.ADMIN) && (
+              <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
+                <Link href="/knowledge">
+                  <Database className="mr-2 h-3.5 w-3.5" />
+                  Knowledge Base
+                </Link>
+              </Button>
+            )}
+            {user?.role === UserRole.SUPER_ADMIN && (
+              <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-200 rounded-lg bg-purple-50 dark:bg-purple-900/10">
+                <Link href="/super-admin">
+                  <Shield className="mr-2 h-3.5 w-3.5" />
+                  Super Admin
+                </Link>
+              </Button>
+            )}
+            {(user?.role === UserRole.SUPER_ADMIN || user?.role === UserRole.ADMIN) && (
+              <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
+                <Link href="/settings">
+                  <Settings className="mr-2 h-3.5 w-3.5" />
+                  Settings
+                </Link>
+              </Button>
+            )}
           </nav>
         </div>
       </div>

@@ -21,6 +21,9 @@ export interface TenantContext {
  * User roles for RBAC
  */
 export enum UserRole {
+  /** Super Admin - can manage all tenants and users */
+  SUPER_ADMIN = 'super_admin',
+  
   /** Full access - can manage tenant settings, users, billing */
   ADMIN = 'admin',
   

@@ -36,6 +36,7 @@ const vector_search_module_1 = require("./modules/vector-search/vector-search.mo
 const llm_gateway_module_1 = require("./modules/llm-gateway/llm-gateway.module");
 const usage_module_1 = require("./modules/usage/usage.module");
 const health_controller_1 = require("./health.controller");
+const super_admin_module_1 = require("./modules/super-admin/super-admin.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -88,6 +89,7 @@ exports.AppModule = AppModule = __decorate([
             vector_search_module_1.VectorSearchModule,
             llm_gateway_module_1.LlmGatewayModule,
             usage_module_1.UsageModule,
+            super_admin_module_1.SuperAdminModule,
         ],
         controllers: [health_controller_1.HealthController],
         providers: [

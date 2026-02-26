@@ -32,6 +32,7 @@ import { VectorSearchModule } from './modules/vector-search/vector-search.module
 import { LlmGatewayModule } from './modules/llm-gateway/llm-gateway.module';
 import { UsageModule } from './modules/usage/usage.module';
 import { HealthController } from './health.controller';
+import { SuperAdminModule } from './modules/super-admin/super-admin.module';
 
 /**
  * Root Application Module
@@ -95,6 +96,7 @@ import { HealthController } from './health.controller';
     VectorSearchModule,
     LlmGatewayModule,
     UsageModule,
+    SuperAdminModule,
   ],
   controllers: [HealthController],
   providers: [
