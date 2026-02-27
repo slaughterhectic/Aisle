@@ -7,7 +7,6 @@ export interface TenantContext {
 export declare enum UserRole {
     SUPER_ADMIN = "super_admin",
     ADMIN = "admin",
-    MANAGER = "manager",
     USER = "user"
 }
 export interface JwtPayload {

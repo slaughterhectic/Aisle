@@ -345,7 +345,9 @@ export function Sidebar() {
           <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg p-1.5 shadow-sm shadow-purple-500/20">
             <Bot className="h-4 w-4 text-white" />
           </div>
-          <span className="tracking-tight text-[15px] font-semibold">Aisle AI</span>
+          <span className="tracking-tight text-[15px] font-semibold truncate">
+            {user?.tenant?.name ? `${user.tenant.name} - Chat` : 'Multi Tenant Chat'}
+          </span>
         </Link>
       </div>
 
@@ -442,7 +444,7 @@ export function Sidebar() {
         <div className="px-3 py-2 border-t border-slate-200/60 dark:border-slate-800">
           <SectionHeader label="Manage" />
           <nav className="space-y-px mt-0.5">
-            {(user?.role === UserRole.SUPER_ADMIN || user?.role === UserRole.ADMIN || user?.role === UserRole.MANAGER) && (
+            {(user?.role === UserRole.SUPER_ADMIN || user?.role === UserRole.ADMIN) && (
               <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
                 <Link href="/assistants">
                   <Bot className="mr-2 h-3.5 w-3.5" />
@@ -455,6 +457,14 @@ export function Sidebar() {
                 <Link href="/knowledge">
                   <Database className="mr-2 h-3.5 w-3.5" />
                   Knowledge Base
+                </Link>
+              </Button>
+            )}
+            {user?.role === UserRole.ADMIN && (
+              <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-amber-600 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-200 rounded-lg bg-amber-50/60 dark:bg-amber-900/10">
+                <Link href="/admin/requests">
+                  <Shield className="mr-2 h-3.5 w-3.5" />
+                  Access Requests
                 </Link>
               </Button>
             )}

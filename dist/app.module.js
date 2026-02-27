@@ -27,6 +27,7 @@ const message_entity_1 = require("./database/entities/message.entity");
 const document_entity_1 = require("./database/entities/document.entity");
 const document_chunk_entity_1 = require("./database/entities/document-chunk.entity");
 const usage_log_entity_1 = require("./database/entities/usage-log.entity");
+const access_request_entity_1 = require("./database/entities/access-request.entity");
 const auth_module_1 = require("./modules/auth/auth.module");
 const assistants_module_1 = require("./modules/assistants/assistants.module");
 const conversations_module_1 = require("./modules/conversations/conversations.module");
@@ -37,6 +38,7 @@ const llm_gateway_module_1 = require("./modules/llm-gateway/llm-gateway.module")
 const usage_module_1 = require("./modules/usage/usage.module");
 const health_controller_1 = require("./health.controller");
 const super_admin_module_1 = require("./modules/super-admin/super-admin.module");
+const access_requests_module_1 = require("./modules/access-requests/access-requests.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -65,6 +67,7 @@ exports.AppModule = AppModule = __decorate([
                         document_entity_1.Document,
                         document_chunk_entity_1.DocumentChunk,
                         usage_log_entity_1.UsageLog,
+                        access_request_entity_1.AccessRequest,
                     ],
                     synchronize: configService.get('nodeEnv') !== 'production',
                     logging: configService.get('nodeEnv') === 'development',
@@ -90,6 +93,7 @@ exports.AppModule = AppModule = __decorate([
             llm_gateway_module_1.LlmGatewayModule,
             usage_module_1.UsageModule,
             super_admin_module_1.SuperAdminModule,
+            access_requests_module_1.AccessRequestsModule,
         ],
         controllers: [health_controller_1.HealthController],
         providers: [

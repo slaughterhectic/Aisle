@@ -54,7 +54,7 @@ let KnowledgeController = class KnowledgeController {
 exports.KnowledgeController = KnowledgeController;
 __decorate([
     (0, common_1.Post)('upload'),
-    (0, roles_decorator_1.Roles)(tenant_context_interface_1.UserRole.ADMIN, tenant_context_interface_1.UserRole.MANAGER),
+    (0, roles_decorator_1.Roles)(tenant_context_interface_1.UserRole.ADMIN),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
     __param(0, (0, tenant_decorator_1.Tenant)()),
     __param(1, (0, common_1.Body)()),

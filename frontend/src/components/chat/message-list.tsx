@@ -18,7 +18,7 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
             <Bot className="h-8 w-8 text-white" />
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-2">
-            Welcome to Aisle AI
+            Welcome to Multi Tenant Chat
           </h2>
           <p className="text-slate-500 max-w-md dark:text-slate-400">
             Start a conversation by typing a message below. Ask questions about your documents or any general topics.

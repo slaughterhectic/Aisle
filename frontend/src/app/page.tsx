@@ -11,7 +11,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center font-bold text-lg">A</div>
-            <span className="font-semibold text-xl tracking-tight">Aisle</span>
+            <span className="font-semibold text-xl tracking-tight">Multi Tenant Chat</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
@@ -29,13 +29,13 @@ export default function Home() {
         <div className="max-w-7xl mx-auto mt-20 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-300 mb-8 tracking-wide">
             <span className="flex h-2 w-2 rounded-full bg-green-500 animate-[pulse_2s_ease-in-out_infinite]"></span>
-            Aisle v1.0 is now live
+            Multi Tenant Chat v1.0 is now live
           </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
             Your Intelligence <br /> Amplified.
           </h1>
           <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Aisle is a state-of-the-art RAG platform that connects your private knowledge base to powerful LLMs. Get instant, accurate answers from your documents.
+            Multi Tenant Chat is a state-of-the-art RAG platform that connects your private knowledge base to powerful LLMs. Get instant, accurate answers from your documents.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/register" className="h-12 px-8 rounded-full bg-white text-black flex items-center gap-2 font-medium hover:bg-zinc-200 transition-all hover:scale-105 active:scale-95">
@@ -54,7 +54,7 @@ export default function Home() {
               <Database className="w-7 h-7 text-orange-400" />
             </div>
             <h3 className="text-xl font-semibold mb-3">Knowledge Engines</h3>
-            <p className="text-zinc-400 leading-relaxed">Upload PDFs, docs, and text. Let Aisle vectorize and index your knowledge securely using Qdrant vector database.</p>
+            <p className="text-zinc-400 leading-relaxed">Upload PDFs, docs, and text. Let Multi Tenant Chat vectorize and index your knowledge securely using Qdrant vector database.</p>
           </div>
           <div className="p-8 rounded-2xl bg-gradient-to-b from-white/5 to-transparent border border-white/10 hover:border-white/20 transition-all duration-300 group">
             <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">

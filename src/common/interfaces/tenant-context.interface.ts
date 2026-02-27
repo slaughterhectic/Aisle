@@ -24,11 +24,8 @@ export enum UserRole {
   /** Super Admin - can manage all tenants and users */
   SUPER_ADMIN = 'super_admin',
   
-  /** Full access - can manage tenant settings, users, billing */
+  /** Full access - can manage tenant settings, users, assistants, knowledge bases */
   ADMIN = 'admin',
-  
-  /** Can manage assistants, knowledge bases, view usage */
-  MANAGER = 'manager',
   
   /** Can only use assistants (chat) */
   USER = 'user',

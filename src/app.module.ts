@@ -21,6 +21,7 @@ import { Message } from './database/entities/message.entity';
 import { Document } from './database/entities/document.entity';
 import { DocumentChunk } from './database/entities/document-chunk.entity';
 import { UsageLog } from './database/entities/usage-log.entity';
+import { AccessRequest } from './database/entities/access-request.entity';
 
 // Modules
 import { AuthModule } from './modules/auth/auth.module';
@@ -33,6 +34,7 @@ import { LlmGatewayModule } from './modules/llm-gateway/llm-gateway.module';
 import { UsageModule } from './modules/usage/usage.module';
 import { HealthController } from './health.controller';
 import { SuperAdminModule } from './modules/super-admin/super-admin.module';
+import { AccessRequestsModule } from './modules/access-requests/access-requests.module';
 
 /**
  * Root Application Module
@@ -68,6 +70,7 @@ import { SuperAdminModule } from './modules/super-admin/super-admin.module';
           Document,
           DocumentChunk,
           UsageLog,
+          AccessRequest,
         ],
         synchronize: configService.get<string>('nodeEnv') !== 'production', // Auto-sync in dev only
         logging: configService.get<string>('nodeEnv') === 'development',
@@ -97,6 +100,7 @@ import { SuperAdminModule } from './modules/super-admin/super-admin.module';
     LlmGatewayModule,
     UsageModule,
     SuperAdminModule,
+    AccessRequestsModule,
   ],
   controllers: [HealthController],
   providers: [

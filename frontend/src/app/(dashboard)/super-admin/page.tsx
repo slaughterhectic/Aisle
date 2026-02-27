@@ -2,26 +2,29 @@
 
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/use-auth-store';
-import { UserRole } from '@/types';
+import { UserRole, AccessRequest } from '@/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ShieldAlert, Users, Building2, Plus, ArrowRight } from 'lucide-react';
+import { ShieldAlert, Users, Building2, Plus, ArrowRight, Clock, UserCheck, UserX, Mail, MessageSquare, Loader2 } from 'lucide-react';
 import api from '@/lib/api';
 
 export default function SuperAdminPage() {
   const { user, token } = useAuthStore();
   const [tenants, setTenants] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
+  const [requests, setRequests] = useState<AccessRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  const [activeTab, setActiveTab] = useState<'users' | 'tenants'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'tenants' | 'requests'>('users');
   const [userForm, setUserForm] = useState({
     name: '',
     email: '',
     password: '',
-    role: UserRole.USER,
+    role: UserRole.ADMIN,
     tenantId: 'new',
     newTenantName: '',
     newTenantSlug: '',
@@ -35,13 +38,15 @@ export default function SuperAdminPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [tenantsRes, usersRes] = await Promise.all([
+      const [tenantsRes, usersRes, requestsRes] = await Promise.all([
         api.get('/super-admin/tenants'),
         api.get('/super-admin/users'),
+        api.get('/super-admin/access-requests'),
       ]);
 
       if (tenantsRes.data) setTenants(tenantsRes.data);
       if (usersRes.data) setUsers(usersRes.data);
+      if (requestsRes.data) setRequests(requestsRes.data);
     } catch (error) {
       alert('Failed to load data');
     } finally {
@@ -88,7 +93,7 @@ export default function SuperAdminPage() {
 
       if (res.status === 200 || res.status === 201) {
         alert('User created successfully');
-        setUserForm({ name: '', email: '', password: '', role: UserRole.USER, tenantId: 'new', newTenantName: '', newTenantSlug: '' });
+        setUserForm({ name: '', email: '', password: '', role: UserRole.ADMIN, tenantId: 'new', newTenantName: '', newTenantSlug: '' });
         fetchData();
       }
     } catch (err: any) {
@@ -108,6 +113,33 @@ export default function SuperAdminPage() {
       }
     } catch (err: any) {
       alert(err?.response?.data?.message || err.message);
+    }
+  };
+
+  const handleApproveRequest = async (id: string) => {
+    setProcessing(id);
+    setSuccessMsg(null);
+    try {
+      const res = await api.post(`/super-admin/access-requests/${id}/approve`, {});
+      setSuccessMsg(res.data?.message || 'Request approved');
+      fetchData();
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Failed to approve');
+    } finally {
+      setProcessing(null);
+    }
+  };
+
+  const handleRejectRequest = async (id: string) => {
+    if (!confirm('Are you sure you want to reject this request?')) return;
+    setProcessing(id);
+    try {
+      await api.post(`/super-admin/access-requests/${id}/reject`);
+      fetchData();
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Failed to reject');
+    } finally {
+      setProcessing(null);
     }
   };
 
@@ -151,9 +183,22 @@ export default function SuperAdminPage() {
               <Building2 className="h-4 w-4" />
               Organizational Tenants
             </button>
+            <button 
+              className={`flex items-center gap-2 pb-3 px-2 font-medium transition-all ${activeTab === 'requests' ? 'border-b-2 border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
+              onClick={() => setActiveTab('requests')}
+            >
+              <Clock className="h-4 w-4" />
+              Access Requests
+              {requests.length > 0 && (
+                <span className="ml-1 inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-[11px] font-bold">
+                  {requests.length}
+                </span>
+              )}
+            </button>
           </div>
 
           <div className="w-full">
+            {/* ─── Users Tab ─────────────────────────────────── */}
             {activeTab === 'users' && (
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 {/* Form Column */}
@@ -162,9 +207,9 @@ export default function SuperAdminPage() {
                     <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800/80 pb-4">
                       <CardTitle className="text-lg flex items-center gap-2">
                         <Plus className="h-4 w-4 text-indigo-500" />
-                        Provision User
+                        Provision Admin
                       </CardTitle>
-                      <CardDescription>Add a new user and map them to a tenant zone.</CardDescription>
+                      <CardDescription>Add a new admin and map them to a tenant zone.</CardDescription>
                     </CardHeader>
                     <CardContent className="pt-6">
                 <form onSubmit={handleCreateUser} className="space-y-5">
@@ -188,10 +233,7 @@ export default function SuperAdminPage() {
                         onChange={(e: any) => setUserForm({...userForm, role: e.target.value as UserRole})}
                         className="flex h-10 w-full rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
                       >
-                        <option value={UserRole.SUPER_ADMIN}>Global Super Admin</option>
                         <option value={UserRole.ADMIN}>Tenant Admin (Full Access)</option>
-                        <option value={UserRole.MANAGER}>Manager (Assistants & Prompts)</option>
-                        <option value={UserRole.USER}>End User (Prompts Only)</option>
                       </select>
                     </div>
                   </div>
@@ -225,7 +267,7 @@ export default function SuperAdminPage() {
 
                   <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20">
                     <Plus className="h-4 w-4 mr-2" />
-                    Provision Identity
+                    Provision Admin
                   </Button>
                 </form>
               </CardContent>
@@ -287,6 +329,7 @@ export default function SuperAdminPage() {
         </div>
         )}
 
+        {/* ─── Tenants Tab ───────────────────────────────── */}
         {activeTab === 'tenants' && (
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
             <div className="xl:col-span-1 space-y-6">
@@ -364,6 +407,94 @@ export default function SuperAdminPage() {
                 </CardContent>
               </Card>
             </div>
+          </div>
+        )}
+
+        {/* ─── Access Requests Tab ────────────────────────── */}
+        {activeTab === 'requests' && (
+          <div className="space-y-6">
+            {/* Success Banner */}
+            {successMsg && (
+              <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 rounded-xl p-4 text-sm text-emerald-700 dark:text-emerald-300 font-medium flex items-center gap-2">
+                <UserCheck className="h-4 w-4 shrink-0" />
+                {successMsg}
+              </div>
+            )}
+
+            {requests.length === 0 ? (
+              <Card className="border-slate-200 dark:border-slate-800">
+                <CardContent className="py-16 text-center">
+                  <Clock className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-700 mb-4" />
+                  <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-300">No Pending Requests</h3>
+                  <p className="text-sm text-slate-400 mt-1">All access requests have been reviewed.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {requests.map((req) => (
+                  <Card key={req.id} className="border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="space-y-2 flex-1">
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                              {req.name[0]?.toUpperCase()}
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-slate-900 dark:text-white">{req.name}</h3>
+                              <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                                <Mail className="h-3 w-3" /> {req.email}
+                              </p>
+                            </div>
+                          </div>
+                          {req.tenantName && (
+                            <p className="text-sm text-slate-600 dark:text-slate-300 flex items-center gap-1 ml-[52px]">
+                              <Building2 className="h-3.5 w-3.5 text-slate-400" /> Wants to join: <span className="font-medium">{req.tenantName}</span>
+                            </p>
+                          )}
+                          {req.newTenantName && (
+                            <p className="text-sm text-indigo-600 dark:text-indigo-400 flex items-center gap-1 ml-[52px]">
+                              <Building2 className="h-3.5 w-3.5" /> New org requested: <span className="font-semibold">{req.newTenantName}</span>
+                              <span className="text-xs px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 font-medium ml-1">will create ADMIN</span>
+                            </p>
+                          )}
+                          {req.message && (
+                            <p className="text-sm text-slate-500 dark:text-slate-400 flex items-start gap-1 ml-[52px]">
+                              <MessageSquare className="h-3.5 w-3.5 mt-0.5 shrink-0" /> {req.message}
+                            </p>
+                          )}
+                          <p className="text-xs text-slate-400 ml-[52px]">
+                            Submitted {new Date(req.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+
+                        <div className="flex gap-2 ml-[52px] md:ml-0">
+                          <Button
+                            size="sm"
+                            onClick={() => handleApproveRequest(req.id)}
+                            disabled={processing === req.id}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                          >
+                            {processing === req.id ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <UserCheck className="h-4 w-4 mr-1" />}
+                            Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleRejectRequest(req.id)}
+                            disabled={processing === req.id}
+                            className="text-red-600 border-red-200 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-950/30"
+                          >
+                            <UserX className="h-4 w-4 mr-1" />
+                            Reject
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         )}
           </div>

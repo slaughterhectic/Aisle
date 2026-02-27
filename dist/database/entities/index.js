@@ -22,4 +22,5 @@ __exportStar(require("./message.entity"), exports);
 __exportStar(require("./document.entity"), exports);
 __exportStar(require("./document-chunk.entity"), exports);
 __exportStar(require("./usage-log.entity"), exports);
+__exportStar(require("./access-request.entity"), exports);
 //# sourceMappingURL=index.js.map

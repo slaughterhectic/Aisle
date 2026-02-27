@@ -5,7 +5,6 @@ var UserRole;
 (function (UserRole) {
     UserRole["SUPER_ADMIN"] = "super_admin";
     UserRole["ADMIN"] = "admin";
-    UserRole["MANAGER"] = "manager";
     UserRole["USER"] = "user";
 })(UserRole || (exports.UserRole = UserRole = {}));
 //# sourceMappingURL=tenant-context.interface.js.map

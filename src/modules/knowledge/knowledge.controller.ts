@@ -33,7 +33,7 @@ export class KnowledgeController {
    * Required role: ADMIN or MANAGER
    */
   @Post('upload')
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @Roles(UserRole.ADMIN)
   @UseInterceptors(FileInterceptor('file'))
   async upload(
     @Tenant() tenant: TenantContext,
