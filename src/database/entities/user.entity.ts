@@ -17,6 +17,7 @@ import { UserRole } from '../../common/interfaces/tenant-context.interface';
  */
 @Entity('users')
 @Index(['tenantId', 'email'], { unique: true })
+@Index(['email'], { unique: true })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -30,7 +31,7 @@ export class User {
   @JoinColumn({ name: 'tenantId' })
   tenant: Tenant;
 
-  @Column({ length: 255 })
+  @Column({ length: 255, unique: true })
   email: string;
 
   @Column({ length: 255 })

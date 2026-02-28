@@ -62,7 +62,7 @@ export default function LoginPage() {
     if (activeTab === 'request') {
       api.get('/auth/tenants')
         .then((res) => setTenants(res.data || []))
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [activeTab]);
 
@@ -74,8 +74,13 @@ export default function LoginPage() {
   async function onLogin(values: z.infer<typeof loginSchema>) {
     try {
       await login(values);
-      router.push('/chat');
-    } catch {}
+      const loggedInUser = useAuthStore.getState().user;
+      if (loggedInUser?.role === 'super_admin') {
+        router.push('/super-admin');
+      } else {
+        router.push('/chat');
+      }
+    } catch { }
   }
 
   async function onRequestAccess(values: z.infer<typeof requestSchema>) {
@@ -90,7 +95,7 @@ export default function LoginPage() {
       const msg = await requestAccess(payload);
       setRequestSuccess(msg);
       requestForm.reset();
-    } catch {}
+    } catch { }
   }
 
   return (
@@ -107,12 +112,12 @@ export default function LoginPage() {
       {/* Left Branding Panel */}
       <div className="hidden lg:flex w-[45%] xl:w-[50%] bg-slate-50 dark:bg-slate-900/40 border-r border-slate-200 dark:border-slate-800 flex-col justify-between p-12 xl:p-16 relative overflow-hidden shrink-0">
         <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-50" />
-        
+
         <div className="relative z-10 flex items-center gap-3">
-           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg shrink-0">
-             <ShieldCheck className="h-5 w-5" />
-           </div>
-           <span className="font-bold text-2xl tracking-tight">Multi Tenant Chat</span>
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg shrink-0">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <span className="font-bold text-2xl tracking-tight">Multi Tenant Chat</span>
         </div>
 
         <div className="relative z-10 w-full max-w-xl">
@@ -139,19 +144,19 @@ export default function LoginPage() {
         </div>
 
         <div className="relative z-10 text-sm text-slate-500 dark:text-slate-400">
-           © {new Date().getFullYear()} Multi Tenant Chat.
+          © {new Date().getFullYear()} Multi Tenant Chat.
         </div>
       </div>
 
       {/* Right Auth Panel */}
       <div className="flex-1 w-full lg:w-[55%] xl:w-[50%] flex items-center justify-center p-6 sm:p-12 overflow-y-auto min-h-screen">
         <div className="w-full max-w-[440px] space-y-8 relative z-10 py-12 lg:py-0">
-          
+
           <div className="lg:hidden flex items-center gap-3 justify-center mb-8">
-             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md">
-               <ShieldCheck className="h-5 w-5" />
-             </div>
-             <span className="font-bold text-2xl tracking-tight">Multi Tenant Chat</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+            <span className="font-bold text-2xl tracking-tight">Multi Tenant Chat</span>
           </div>
 
           <div className="text-center space-y-2">
@@ -164,21 +169,19 @@ export default function LoginPage() {
           <div className="flex p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl">
             <button
               onClick={() => setActiveTab('login')}
-              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
-                activeTab === 'login'
+              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'login'
                   ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
+                }`}
             >
               Sign In
             </button>
             <button
               onClick={() => setActiveTab('request')}
-              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
-                activeTab === 'request'
+              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'request'
                   ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
+                }`}
             >
               Register
             </button>
@@ -305,25 +308,23 @@ export default function LoginPage() {
                           Workspace Options
                         </label>
                         <div className="grid grid-cols-2 gap-3">
-                          <div 
+                          <div
                             onClick={() => setTenantChoice('existing')}
-                            className={`cursor-pointer border rounded-xl p-4 transition-all ${
-                              tenantChoice === 'existing' 
-                                ? 'border-slate-900 dark:border-slate-400 bg-slate-50 dark:bg-slate-900/50 ring-1 ring-slate-900 dark:ring-slate-400' 
+                            className={`cursor-pointer border rounded-xl p-4 transition-all ${tenantChoice === 'existing'
+                                ? 'border-slate-900 dark:border-slate-400 bg-slate-50 dark:bg-slate-900/50 ring-1 ring-slate-900 dark:ring-slate-400'
                                 : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-                            }`}
+                              }`}
                           >
                             <Building className="h-5 w-5 mb-2 text-slate-700 dark:text-slate-300" />
                             <div className="font-medium text-sm">Join Existing</div>
                             <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Request to join your team</div>
                           </div>
-                          <div 
+                          <div
                             onClick={() => setTenantChoice('new')}
-                            className={`cursor-pointer border rounded-xl p-4 transition-all ${
-                              tenantChoice === 'new' 
-                                ? 'border-slate-900 dark:border-slate-400 bg-slate-50 dark:bg-slate-900/50 ring-1 ring-slate-900 dark:ring-slate-400' 
+                            className={`cursor-pointer border rounded-xl p-4 transition-all ${tenantChoice === 'new'
+                                ? 'border-slate-900 dark:border-slate-400 bg-slate-50 dark:bg-slate-900/50 ring-1 ring-slate-900 dark:ring-slate-400'
                                 : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-                            }`}
+                              }`}
                           >
                             <Sparkles className="h-5 w-5 mb-2 text-slate-700 dark:text-slate-300" />
                             <div className="font-medium text-sm">Create New</div>

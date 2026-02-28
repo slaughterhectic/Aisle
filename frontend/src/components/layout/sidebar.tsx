@@ -7,7 +7,7 @@ import {
   Plus, Settings, LogOut, Database, Bot,
   MoreHorizontal, Pencil, Trash2, Pin, Archive,
   Share2, ChevronDown, ChevronRight, PinOff, ArchiveRestore,
-  Search, X, Shield,
+  Search, X, Shield, PanelLeftClose,
 } from 'lucide-react';
 import useSWR from 'swr';
 
@@ -18,6 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuthStore } from '@/store/use-auth-store';
 import { UserRole } from '@/types';
 import api from '@/lib/api';
+import { useSidebarStore } from '@/store/use-sidebar-store';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -277,10 +278,15 @@ export function Sidebar() {
   const router = useRouter();
   const { user, logout } = useAuthStore();
   const { data: conversations, mutate } = useSWR<Conversation[]>('/conversations', fetcher);
+  const { data: tenantInfo } = useSWR(user ? '/tenant/info' : null, fetcher);
   const [archivedOpen, setArchivedOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [searchFocused, setSearchFocused] = React.useState(false);
   const searchRef = React.useRef<HTMLInputElement>(null);
+
+  const logoSrc = tenantInfo?.logoUrl
+    ? `${api.defaults.baseURL}/tenant/logo/${tenantInfo.id}`
+    : null;
 
   const handleRename = async (id: string, newTitle: string) => {
     try {
@@ -337,155 +343,197 @@ export function Sidebar() {
   return (
     <div className="flex h-full w-[280px] flex-col border-r border-slate-200/80 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950/60">
       {/* ── Header ────────────────────────────────────────────────── */}
-      <div className="flex h-14 items-center border-b border-slate-200/60 dark:border-slate-800 px-4">
+      <div className="flex h-14 items-center justify-between border-b border-slate-200/60 dark:border-slate-800 px-4">
         <Link
-          href="/chat"
-          className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-100 hover:text-purple-600 transition-colors"
+          href={user?.role === UserRole.SUPER_ADMIN ? '/super-admin' : '/chat'}
+          className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-100 hover:text-purple-600 transition-colors min-w-0"
         >
-          <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg p-1.5 shadow-sm shadow-purple-500/20">
-            <Bot className="h-4 w-4 text-white" />
-          </div>
+          {logoSrc ? (
+            <img
+              src={logoSrc}
+              alt="Org logo"
+              className="h-8 w-8 rounded-lg object-cover shadow-sm ring-1 ring-slate-200 dark:ring-slate-700 shrink-0"
+            />
+          ) : (
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg p-1.5 shadow-sm shadow-purple-500/20 shrink-0">
+              <Bot className="h-4 w-4 text-white" />
+            </div>
+          )}
           <span className="tracking-tight text-[15px] font-semibold truncate">
-            {user?.tenant?.name ? `${user.tenant.name} - Chat` : 'Multi Tenant Chat'}
+            {tenantInfo?.name || 'Multi Tenant Chat'}
           </span>
         </Link>
+        <button
+          onClick={() => useSidebarStore.getState().toggle()}
+          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 cursor-pointer"
+          title="Collapse sidebar"
+        >
+          <PanelLeftClose className="h-4 w-4" />
+        </button>
       </div>
 
       {/* ── Main Content ──────────────────────────────────────────── */}
       <div className="flex-1 overflow-hidden flex flex-col">
-        {/* New Chat + Search */}
-        <div className="px-3 pt-3 pb-1 space-y-2">
-          <Button
-            asChild
-            className="w-full justify-start gap-2 h-9 bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 shadow-sm shadow-purple-500/20 border-0 text-[13px] font-medium rounded-lg"
-          >
-            <Link href="/chat">
-              <Plus className="h-4 w-4" />
-              New Chat
-            </Link>
-          </Button>
 
-          {/* Search Bar */}
-          <div className={cn(
-            "relative flex items-center rounded-lg border transition-all duration-200",
-            searchFocused
-              ? "border-purple-400 dark:border-purple-500 ring-1 ring-purple-400/30 bg-white dark:bg-slate-900"
-              : "border-slate-200 dark:border-slate-700/80 bg-slate-100/80 dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-600"
-          )}>
-            <Search className="h-3.5 w-3.5 ml-2.5 text-slate-400 dark:text-slate-500 shrink-0" />
-            <input
-              ref={searchRef}
-              type="text"
-              placeholder="Search chats..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-              className="flex-1 bg-transparent text-[13px] py-1.5 px-2 outline-none text-slate-700 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-500"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => { setSearchQuery(''); searchRef.current?.focus(); }}
-                className="mr-1.5 p-0.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+        {/* Chat UI — hidden for super_admin */}
+        {user?.role !== UserRole.SUPER_ADMIN && (
+          <>
+            {/* New Chat + Search */}
+            <div className="px-3 pt-3 pb-1 space-y-2">
+              <Button
+                asChild
+                className="w-full justify-start gap-2 h-9 bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 shadow-sm shadow-purple-500/20 border-0 text-[13px] font-medium rounded-lg"
               >
-                <X className="h-3 w-3" />
-              </button>
-            )}
-          </div>
-        </div>
+                <Link href="/chat">
+                  <Plus className="h-4 w-4" />
+                  New Chat
+                </Link>
+              </Button>
 
-        {/* ── Chat Sections ─────────────────────────────────────── */}
-        <div className="flex-1 overflow-hidden flex flex-col px-2 pt-2 gap-1">
-
-          {/* Pinned */}
-          {pinnedChats.length > 0 && (
-            <div className="shrink-0 flex flex-col">
-              <SectionHeader label="Pinned" count={pinnedChats.length} />
-              <ChatSection chats={pinnedChats} maxHeight="max-h-[140px]" itemProps={itemProps} />
-            </div>
-          )}
-
-          {/* Recent Chats — takes remaining space */}
-          <div className="flex-1 min-h-0 flex flex-col">
-            <SectionHeader label="Recent Chats" count={recentChats.length > 0 ? recentChats.length : undefined} />
-            {recentChats.length > 0 ? (
-              <ScrollArea className="flex-1">
-                <div className="space-y-px pr-1">
-                  {recentChats.map((chat) => (
-                    <ConversationItem key={chat.id} chat={chat} {...itemProps} />
-                  ))}
-                </div>
-              </ScrollArea>
-            ) : (
-              <div className="px-3 py-3 text-[12px] text-slate-400 dark:text-slate-500 text-center italic">
-                {searchQuery ? 'No matches found' : 'No recent chats'}
+              {/* Search Bar */}
+              <div className={cn(
+                "relative flex items-center rounded-lg border transition-all duration-200",
+                searchFocused
+                  ? "border-purple-400 dark:border-purple-500 ring-1 ring-purple-400/30 bg-white dark:bg-slate-900"
+                  : "border-slate-200 dark:border-slate-700/80 bg-slate-100/80 dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-600"
+              )}>
+                <Search className="h-3.5 w-3.5 ml-2.5 text-slate-400 dark:text-slate-500 shrink-0" />
+                <input
+                  ref={searchRef}
+                  type="text"
+                  placeholder="Search chats..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                  className="flex-1 bg-transparent text-[13px] py-1.5 px-2 outline-none text-slate-700 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => { setSearchQuery(''); searchRef.current?.focus(); }}
+                    className="mr-1.5 p-0.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
               </div>
-            )}
-          </div>
+            </div>
 
-          {/* Archived (collapsible) */}
-          {archivedChats.length > 0 && (
-            <div className="shrink-0 flex flex-col border-t border-slate-200/60 dark:border-slate-800 pt-1">
-              <SectionHeader
-                label="Archived"
-                collapsible
-                isOpen={archivedOpen}
-                onToggle={() => setArchivedOpen(!archivedOpen)}
-                count={archivedChats.length}
-              />
-              {archivedOpen && (
-                <ChatSection chats={archivedChats} maxHeight="max-h-[160px]" itemProps={itemProps} />
+            {/* ── Chat Sections ─────────────────────────────────────── */}
+            <div className="flex-1 overflow-hidden flex flex-col px-2 pt-2 gap-1">
+
+              {/* Pinned */}
+              {pinnedChats.length > 0 && (
+                <div className="shrink-0 flex flex-col">
+                  <SectionHeader label="Pinned" count={pinnedChats.length} />
+                  <ChatSection chats={pinnedChats} maxHeight="max-h-[140px]" itemProps={itemProps} />
+                </div>
+              )}
+
+              {/* Recent Chats — takes remaining space */}
+              <div className="flex-1 min-h-0 flex flex-col">
+                <SectionHeader label="Recent Chats" count={recentChats.length > 0 ? recentChats.length : undefined} />
+                {recentChats.length > 0 ? (
+                  <ScrollArea className="flex-1">
+                    <div className="space-y-px pr-1">
+                      {recentChats.map((chat) => (
+                        <ConversationItem key={chat.id} chat={chat} {...itemProps} />
+                      ))}
+                    </div>
+                  </ScrollArea>
+                ) : (
+                  <div className="px-3 py-3 text-[12px] text-slate-400 dark:text-slate-500 text-center italic">
+                    {searchQuery ? 'No matches found' : 'No recent chats'}
+                  </div>
+                )}
+              </div>
+
+              {/* Archived (collapsible) */}
+              {archivedChats.length > 0 && (
+                <div className="shrink-0 flex flex-col border-t border-slate-200/60 dark:border-slate-800 pt-1">
+                  <SectionHeader
+                    label="Archived"
+                    collapsible
+                    isOpen={archivedOpen}
+                    onToggle={() => setArchivedOpen(!archivedOpen)}
+                    count={archivedChats.length}
+                  />
+                  {archivedOpen && (
+                    <ChatSection chats={archivedChats} maxHeight="max-h-[160px]" itemProps={itemProps} />
+                  )}
+                </div>
               )}
             </div>
-          )}
-        </div>
+          </>
+        )}
 
-        {/* ── Manage Section ─────────────────────────────────────── */}
-        <div className="px-3 py-2 border-t border-slate-200/60 dark:border-slate-800">
-          <SectionHeader label="Manage" />
-          <nav className="space-y-px mt-0.5">
-            {(user?.role === UserRole.SUPER_ADMIN || user?.role === UserRole.ADMIN) && (
-              <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
-                <Link href="/assistants">
-                  <Bot className="mr-2 h-3.5 w-3.5" />
-                  Assistants
-                </Link>
-              </Button>
-            )}
-            {(user?.role === UserRole.SUPER_ADMIN || user?.role === UserRole.ADMIN) && (
-              <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
-                <Link href="/knowledge">
-                  <Database className="mr-2 h-3.5 w-3.5" />
-                  Knowledge Base
-                </Link>
-              </Button>
-            )}
-            {user?.role === UserRole.ADMIN && (
-              <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-amber-600 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-200 rounded-lg bg-amber-50/60 dark:bg-amber-900/10">
-                <Link href="/admin/requests">
-                  <Shield className="mr-2 h-3.5 w-3.5" />
-                  Access Requests
-                </Link>
-              </Button>
-            )}
-            {user?.role === UserRole.SUPER_ADMIN && (
-              <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-200 rounded-lg bg-purple-50 dark:bg-purple-900/10">
+        {/* Super Admin Overview — shown only for super_admin */}
+        {user?.role === UserRole.SUPER_ADMIN && (
+          <div className="flex-1 flex flex-col px-3 pt-4">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg p-1.5">
+                <Shield className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <p className="text-[13px] font-semibold text-slate-800 dark:text-slate-100">System Control</p>
+                <p className="text-[11px] text-slate-400">Platform Administration</p>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Button asChild variant="ghost" className="w-full justify-start h-9 text-[13px] text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-200 rounded-lg bg-purple-50 dark:bg-purple-900/10">
                 <Link href="/super-admin">
                   <Shield className="mr-2 h-3.5 w-3.5" />
-                  Super Admin
+                  Dashboard
                 </Link>
               </Button>
-            )}
-            {(user?.role === UserRole.SUPER_ADMIN || user?.role === UserRole.ADMIN) && (
+              <Button asChild variant="ghost" className="w-full justify-start h-9 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
+                <Link href="/settings">
+                  <Settings className="mr-2 h-3.5 w-3.5" />
+                  Settings
+                </Link>
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Manage Section (non-super_admin) ─────────────────────── */}
+        {user?.role !== UserRole.SUPER_ADMIN && (
+          <div className="px-3 py-2 border-t border-slate-200/60 dark:border-slate-800">
+            <SectionHeader label="Manage" />
+            <nav className="space-y-px mt-0.5">
+              {user?.role === UserRole.ADMIN && (
+                <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
+                  <Link href="/assistants">
+                    <Bot className="mr-2 h-3.5 w-3.5" />
+                    Assistants
+                  </Link>
+                </Button>
+              )}
+              {user?.role === UserRole.ADMIN && (
+                <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
+                  <Link href="/knowledge">
+                    <Database className="mr-2 h-3.5 w-3.5" />
+                    Knowledge Base
+                  </Link>
+                </Button>
+              )}
+              {user?.role === UserRole.ADMIN && (
+                <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-amber-600 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-200 rounded-lg bg-amber-50/60 dark:bg-amber-900/10">
+                  <Link href="/admin/requests">
+                    <Shield className="mr-2 h-3.5 w-3.5" />
+                    Access Requests
+                  </Link>
+                </Button>
+              )}
               <Button asChild variant="ghost" className="w-full justify-start h-8 text-[13px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 rounded-lg">
                 <Link href="/settings">
                   <Settings className="mr-2 h-3.5 w-3.5" />
                   Settings
                 </Link>
               </Button>
-            )}
-          </nav>
-        </div>
+            </nav>
+          </div>
+        )}
       </div>
 
       {/* ── User Profile ──────────────────────────────────────────── */}

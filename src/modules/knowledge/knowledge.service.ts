@@ -35,7 +35,7 @@ export class KnowledgeService {
     private readonly storageService: StorageService,
     @Inject(forwardRef(() => IngestionService))
     private readonly ingestionService: IngestionService,
-  ) {}
+  ) { }
 
   /**
    * Upload and process a document
@@ -111,6 +111,18 @@ export class KnowledgeService {
     }
 
     return document;
+  }
+
+  /**
+   * Get a document's file stream
+   */
+  async getDocumentStream(
+    tenant: TenantContext,
+    id: string,
+  ): Promise<{ stream: NodeJS.ReadableStream; document: Document }> {
+    const document = await this.findOne(tenant, id);
+    const stream = await this.storageService.getFileStream(document.s3Key);
+    return { stream, document };
   }
 
   /**

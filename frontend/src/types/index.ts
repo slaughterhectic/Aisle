@@ -8,6 +8,15 @@ export interface Tenant {
   id: string;
   name: string;
   slug: string;
+  logoUrl?: string | null;
+}
+
+export interface TenantInfo {
+  id: string;
+  name: string;
+  slug: string;
+  logoUrl: string | null;
+  createdAt: string;
 }
 
 export interface User {

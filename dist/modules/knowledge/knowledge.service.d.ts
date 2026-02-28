@@ -15,6 +15,10 @@ export declare class KnowledgeService {
     uploadDocument(tenant: TenantContext, dto: UploadDocumentDto, file: Express.Multer.File): Promise<DocumentResponse>;
     findAll(tenant: TenantContext, assistantId?: string): Promise<DocumentResponse[]>;
     findOne(tenant: TenantContext, id: string): Promise<Document>;
+    getDocumentStream(tenant: TenantContext, id: string): Promise<{
+        stream: NodeJS.ReadableStream;
+        document: Document;
+    }>;
     remove(tenant: TenantContext, id: string): Promise<void>;
     updateStatus(id: string, status: DocumentStatus, updates?: {
         chunkCount?: number;

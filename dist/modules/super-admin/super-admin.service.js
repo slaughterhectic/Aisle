@@ -96,10 +96,10 @@ let SuperAdminService = class SuperAdminService {
             }
         }
         const existingUser = await this.userRepository.findOne({
-            where: { email: dto.email, tenantId },
+            where: { email: dto.email },
         });
         if (existingUser) {
-            throw new common_1.ConflictException('User with this email already exists in the selected tenant');
+            throw new common_1.ConflictException('A user with this email already exists. Each email can only be associated with one account.');
         }
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(dto.password, salt);

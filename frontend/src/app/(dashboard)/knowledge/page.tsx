@@ -15,6 +15,8 @@ import {
   AlertCircle,
   Clock,
   Database,
+  Download,
+  ExternalLink,
 } from 'lucide-react';
 
 interface Document {
@@ -118,6 +120,38 @@ export default function KnowledgePage() {
     },
     [selectedAssistant, assistants, mutate],
   );
+
+  const handleView = async (doc: Document) => {
+    try {
+      const response = await api.get(`/knowledge/${doc.id}/content`, {
+        responseType: 'blob',
+      });
+      const blob = new Blob([response.data], { type: doc.mimeType });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to view document');
+    }
+  };
+
+  const handleDownload = async (doc: Document) => {
+    try {
+      const response = await api.get(`/knowledge/${doc.id}/content?download=true`, {
+        responseType: 'blob',
+      });
+      const blob = new Blob([response.data], { type: doc.mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = doc.filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to download document');
+    }
+  };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this document?')) return;
@@ -234,19 +268,43 @@ export default function KnowledgePage() {
                 </p>
               </div>
               <StatusBadge status={doc.status} />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-gray-400 hover:text-red-600"
-                onClick={() => handleDelete(doc.id)}
-                disabled={deleting === doc.id}
-              >
-                {deleting === doc.id ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Trash2 className="h-4 w-4" />
-                )}
-              </Button>
+
+              <div className="flex items-center ml-4 gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-gray-400 hover:text-blue-600"
+                  title="View Document"
+                  onClick={() => handleView(doc)}
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-gray-400 hover:text-blue-600"
+                  title="Download Document"
+                  onClick={() => handleDownload(doc)}
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-gray-400 hover:text-red-600"
+                  title="Delete Document"
+                  onClick={() => handleDelete(doc.id)}
+                  disabled={deleting === doc.id}
+                >
+                  {deleting === doc.id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
             </div>
           ))}
         </div>

@@ -141,10 +141,10 @@ let AccessRequestsService = AccessRequestsService_1 = class AccessRequestsServic
             targetTenantId = reviewerTenantId;
         }
         const existingUser = await this.userRepo.findOne({
-            where: { email: request.email, tenantId: targetTenantId },
+            where: { email: request.email },
         });
         if (existingUser) {
-            throw new common_1.ConflictException('A user with this email already exists in the target tenant');
+            throw new common_1.ConflictException('A user with this email already exists. Each email can only be associated with one account.');
         }
         const userRole = (request.newTenantName && reviewerRole === tenant_context_interface_1.UserRole.SUPER_ADMIN)
             ? tenant_context_interface_1.UserRole.ADMIN

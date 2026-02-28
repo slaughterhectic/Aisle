@@ -90,6 +90,25 @@ export class StorageService {
   }
 
   /**
+   * Get a readable stream for a file from S3
+   */
+  async getFileStream(key: string): Promise<Readable> {
+    try {
+      const response = await this.s3Client.send(
+        new GetObjectCommand({
+          Bucket: this.bucket,
+          Key: key,
+        }),
+      );
+
+      return response.Body as Readable;
+    } catch (error) {
+      this.logger.error(`Failed to get file stream: ${key}`, error);
+      throw error;
+    }
+  }
+
+  /**
    * Delete file from S3
    */
   async deleteFile(key: string): Promise<void> {

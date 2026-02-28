@@ -39,6 +39,7 @@ const usage_module_1 = require("./modules/usage/usage.module");
 const health_controller_1 = require("./health.controller");
 const super_admin_module_1 = require("./modules/super-admin/super-admin.module");
 const access_requests_module_1 = require("./modules/access-requests/access-requests.module");
+const tenant_module_1 = require("./modules/tenant/tenant.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -94,6 +95,7 @@ exports.AppModule = AppModule = __decorate([
             usage_module_1.UsageModule,
             super_admin_module_1.SuperAdminModule,
             access_requests_module_1.AccessRequestsModule,
+            tenant_module_1.TenantModule,
         ],
         controllers: [health_controller_1.HealthController],
         providers: [

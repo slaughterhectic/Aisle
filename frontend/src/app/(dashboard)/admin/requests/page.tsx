@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
 import { useAuthStore } from '@/store/use-auth-store';
 import { UserRole, AccessRequest } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,30 +9,20 @@ import { Button } from '@/components/ui/button';
 import { ShieldAlert, UserCheck, UserX, Clock, Mail, Building2, MessageSquare, Loader2 } from 'lucide-react';
 import api from '@/lib/api';
 
+const fetcher = (url: string) => api.get(url).then((r: any) => r.data);
+
 export default function AdminRequestsPage() {
   const { user } = useAuthStore();
-  const [requests, setRequests] = useState<AccessRequest[]>([]);
-  const [loading, setLoading] = useState(true);
+  const isAdmin = user?.role === UserRole.ADMIN;
+
+  const { data: requests, error, isLoading: loading, mutate } = useSWR<AccessRequest[]>(
+    isAdmin ? '/admin/access-requests' : null,
+    fetcher,
+    { refreshInterval: 5000 }, // Poll every 5 seconds for real-time updates
+  );
+
   const [processing, setProcessing] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
-
-  const fetchRequests = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get('/admin/access-requests');
-      setRequests(res.data || []);
-    } catch {
-      alert('Failed to load access requests');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (user?.role === UserRole.ADMIN) {
-      fetchRequests();
-    }
-  }, [user]);
 
   const handleApprove = async (id: string) => {
     setProcessing(id);
@@ -39,7 +30,7 @@ export default function AdminRequestsPage() {
     try {
       const res = await api.post(`/admin/access-requests/${id}/approve`, {});
       setSuccessMsg(res.data?.message || 'Request approved');
-      fetchRequests();
+      mutate();
     } catch (err: any) {
       alert(err?.response?.data?.message || 'Failed to approve');
     } finally {
@@ -52,7 +43,7 @@ export default function AdminRequestsPage() {
     setProcessing(id);
     try {
       await api.post(`/admin/access-requests/${id}/reject`);
-      fetchRequests();
+      mutate();
     } catch (err: any) {
       alert(err?.response?.data?.message || 'Failed to reject');
     } finally {
@@ -100,7 +91,7 @@ export default function AdminRequestsPage() {
             <div className="flex items-center justify-center py-16">
               <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
             </div>
-          ) : requests.length === 0 ? (
+          ) : !requests || requests.length === 0 ? (
             <Card className="border-slate-200 dark:border-slate-800">
               <CardContent className="py-16 text-center">
                 <Clock className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-700 mb-4" />
@@ -110,7 +101,7 @@ export default function AdminRequestsPage() {
             </Card>
           ) : (
             <div className="space-y-4">
-              {requests.map((req) => (
+              {(requests || []).map((req) => (
                 <Card key={req.id} className="border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

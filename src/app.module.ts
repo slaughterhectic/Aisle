@@ -35,6 +35,7 @@ import { UsageModule } from './modules/usage/usage.module';
 import { HealthController } from './health.controller';
 import { SuperAdminModule } from './modules/super-admin/super-admin.module';
 import { AccessRequestsModule } from './modules/access-requests/access-requests.module';
+import { TenantModule } from './modules/tenant/tenant.module';
 
 /**
  * Root Application Module
@@ -101,6 +102,7 @@ import { AccessRequestsModule } from './modules/access-requests/access-requests.
     UsageModule,
     SuperAdminModule,
     AccessRequestsModule,
+    TenantModule,
   ],
   controllers: [HealthController],
   providers: [
@@ -121,4 +123,4 @@ import { AccessRequestsModule } from './modules/access-requests/access-requests.
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

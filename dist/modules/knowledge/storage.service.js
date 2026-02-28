@@ -73,6 +73,19 @@ let StorageService = StorageService_1 = class StorageService {
             throw error;
         }
     }
+    async getFileStream(key) {
+        try {
+            const response = await this.s3Client.send(new client_s3_1.GetObjectCommand({
+                Bucket: this.bucket,
+                Key: key,
+            }));
+            return response.Body;
+        }
+        catch (error) {
+            this.logger.error(`Failed to get file stream: ${key}`, error);
+            throw error;
+        }
+    }
     async deleteFile(key) {
         try {
             await this.s3Client.send(new client_s3_1.DeleteObjectCommand({

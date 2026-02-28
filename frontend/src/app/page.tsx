@@ -38,7 +38,7 @@ export default function Home() {
             Multi Tenant Chat is a state-of-the-art RAG platform that connects your private knowledge base to powerful LLMs. Get instant, accurate answers from your documents.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/register" className="h-12 px-8 rounded-full bg-white text-black flex items-center gap-2 font-medium hover:bg-zinc-200 transition-all hover:scale-105 active:scale-95">
+            <Link href="/login" className="h-12 px-8 rounded-full bg-white text-black flex items-center gap-2 font-medium hover:bg-zinc-200 transition-all hover:scale-105 active:scale-95">
               Start Building Free <ArrowRight className="w-4 h-4" />
             </Link>
             <Link href="/login" className="h-12 px-8 rounded-full bg-white/10 text-white flex items-center gap-2 font-medium hover:bg-white/20 transition-all border border-white/5 hover:scale-105 active:scale-95">
@@ -71,37 +71,37 @@ export default function Home() {
             <p className="text-zinc-400 leading-relaxed">Powered by NestJS, Redis, and best-in-class vector search, delivering enterprise-grade responses in milliseconds.</p>
           </div>
         </div>
-        
+
         {/* Mockup / Dashboard Preview snippet */}
         <div className="max-w-5xl mx-auto mt-32 relative rounded-2xl border border-white/10 bg-zinc-900/50 p-2 backdrop-blur-sm overflow-hidden group shadow-2xl shadow-purple-900/20">
-           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none"></div>
-           <div className="rounded-xl border border-white/5 bg-zinc-950 flex flex-col h-[400px]">
-             <div className="h-12 border-b border-white/5 flex items-center px-4 gap-2 bg-zinc-900/40">
-                <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
-             </div>
-             <div className="flex-1 p-8 opacity-70 group-hover:opacity-100 transition-opacity duration-700">
-               <div className="max-w-2xl mx-auto md:mx-0">
-                 <div className="flex gap-4 mb-6">
-                   <div className="w-8 h-8 rounded bg-zinc-800 flex-shrink-0 mt-1"></div>
-                   <div className="h-10 rounded-xl w-64 bg-zinc-800/80 animate-pulse"></div>
-                 </div>
-                 <div className="flex gap-4 mb-6 flex-row-reverse">
-                   <div className="w-8 h-8 rounded bg-gradient-to-br from-purple-500 to-blue-500 flex-shrink-0 mt-1 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                      <span className="text-xs font-bold text-white">A</span>
-                   </div>
-                   <div className="p-4 rounded-xl bg-purple-600/20 border border-purple-500/20 text-sm text-zinc-300 w-full md:w-[80%] shadow-inner flex flex-col gap-3">
-                     <p>"Based on the provided knowledge base, the Q3 earnings grew by 24% year-over-year, largely driven by the adoption of our new AI features."</p>
-                     <div className="flex gap-2 mt-2">
-                       <span className="text-xs px-2 py-1 rounded bg-black/40 text-zinc-400 border border-white/5 flex items-center gap-1"><Database className="w-3 h-3" /> Q3_Report.pdf</span>
-                       <span className="text-xs px-2 py-1 rounded bg-black/40 text-zinc-400 border border-white/5 flex items-center gap-1"><Database className="w-3 h-3" /> Financials_2024.xlsx</span>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-             </div>
-           </div>
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none"></div>
+          <div className="rounded-xl border border-white/5 bg-zinc-950 flex flex-col h-[400px]">
+            <div className="h-12 border-b border-white/5 flex items-center px-4 gap-2 bg-zinc-900/40">
+              <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+            </div>
+            <div className="flex-1 p-8 opacity-70 group-hover:opacity-100 transition-opacity duration-700">
+              <div className="max-w-2xl mx-auto md:mx-0">
+                <div className="flex gap-4 mb-6">
+                  <div className="w-8 h-8 rounded bg-zinc-800 flex-shrink-0 mt-1"></div>
+                  <div className="h-10 rounded-xl w-64 bg-zinc-800/80 animate-pulse"></div>
+                </div>
+                <div className="flex gap-4 mb-6 flex-row-reverse">
+                  <div className="w-8 h-8 rounded bg-gradient-to-br from-purple-500 to-blue-500 flex-shrink-0 mt-1 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                    <span className="text-xs font-bold text-white">A</span>
+                  </div>
+                  <div className="p-4 rounded-xl bg-purple-600/20 border border-purple-500/20 text-sm text-zinc-300 w-full md:w-[80%] shadow-inner flex flex-col gap-3">
+                    <p>"Based on the provided knowledge base, the Q3 earnings grew by 24% year-over-year, largely driven by the adoption of our new AI features."</p>
+                    <div className="flex gap-2 mt-2">
+                      <span className="text-xs px-2 py-1 rounded bg-black/40 text-zinc-400 border border-white/5 flex items-center gap-1"><Database className="w-3 h-3" /> Q3_Report.pdf</span>
+                      <span className="text-xs px-2 py-1 rounded bg-black/40 text-zinc-400 border border-white/5 flex items-center gap-1"><Database className="w-3 h-3" /> Financials_2024.xlsx</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>

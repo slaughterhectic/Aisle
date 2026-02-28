@@ -14,7 +14,7 @@ export class SuperAdminService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Tenant)
     private readonly tenantRepository: Repository<Tenant>,
-  ) {}
+  ) { }
 
   async createTenant(dto: CreateTenantDto): Promise<Tenant> {
     const existing = await this.tenantRepository.findOne({ where: { slug: dto.slug } });
@@ -56,10 +56,10 @@ export class SuperAdminService {
     }
 
     const existingUser = await this.userRepository.findOne({
-      where: { email: dto.email, tenantId },
+      where: { email: dto.email },
     });
     if (existingUser) {
-      throw new ConflictException('User with this email already exists in the selected tenant');
+      throw new ConflictException('A user with this email already exists. Each email can only be associated with one account.');
     }
 
     const salt = await bcrypt.genSalt();

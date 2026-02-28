@@ -11,7 +11,9 @@ import {
   HttpStatus,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { KnowledgeService } from './knowledge.service';
 import { UploadDocumentDto, DocumentResponse } from './dto/knowledge.dto';
@@ -25,7 +27,7 @@ import { TenantContext, UserRole } from '../../common/interfaces/tenant-context.
  */
 @Controller('knowledge')
 export class KnowledgeController {
-  constructor(private readonly knowledgeService: KnowledgeService) {}
+  constructor(private readonly knowledgeService: KnowledgeService) { }
 
   /**
    * Upload a document
@@ -79,6 +81,28 @@ export class KnowledgeController {
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };
+  }
+
+  /**
+   * Get document content stream
+   * GET /knowledge/:id/content
+   * Optional query: ?download=true
+   */
+  @Get(':id/content')
+  async getContent(
+    @Tenant() tenant: TenantContext,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('download') download: boolean,
+    @Res() res: Response,
+  ) {
+    const { stream, document } = await this.knowledgeService.getDocumentStream(tenant, id);
+
+    res.set({
+      'Content-Type': document.mimeType,
+      'Content-Disposition': `${download ? 'attachment' : 'inline'}; filename="${document.filename}"`,
+    });
+
+    stream.pipe(res);
   }
 
   /**

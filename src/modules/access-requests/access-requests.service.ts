@@ -21,7 +21,7 @@ export class AccessRequestsService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(Tenant)
     private readonly tenantRepo: Repository<Tenant>,
-  ) {}
+  ) { }
 
   /**
    * Submit a new access request (public, no auth)
@@ -130,12 +130,12 @@ export class AccessRequestsService {
       targetTenantId = reviewerTenantId;
     }
 
-    // Check if user already exists in target tenant
+    // Check if user already exists (email is globally unique)
     const existingUser = await this.userRepo.findOne({
-      where: { email: request.email, tenantId: targetTenantId },
+      where: { email: request.email },
     });
     if (existingUser) {
-      throw new ConflictException('A user with this email already exists in the target tenant');
+      throw new ConflictException('A user with this email already exists. Each email can only be associated with one account.');
     }
 
     // Determine role: admin creates users, super admin creating new tenant creates admin

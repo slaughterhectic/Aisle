@@ -42,7 +42,7 @@ __decorate([
     __metadata("design:type", tenant_entity_1.Tenant)
 ], User.prototype, "tenant", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ length: 255 }),
+    (0, typeorm_1.Column)({ length: 255, unique: true }),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
@@ -79,6 +79,7 @@ __decorate([
 ], User.prototype, "updatedAt", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)('users'),
-    (0, typeorm_1.Index)(['tenantId', 'email'], { unique: true })
+    (0, typeorm_1.Index)(['tenantId', 'email'], { unique: true }),
+    (0, typeorm_1.Index)(['email'], { unique: true })
 ], User);
 //# sourceMappingURL=user.entity.js.map
