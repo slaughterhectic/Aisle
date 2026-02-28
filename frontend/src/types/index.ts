@@ -1,6 +1,6 @@
 export enum UserRole {
+  SUPER_ADMIN = 'super_admin',
   ADMIN = 'admin',
-  MANAGER = 'manager',
   USER = 'user',
 }
 
@@ -8,6 +8,15 @@ export interface Tenant {
   id: string;
   name: string;
   slug: string;
+  logoUrl?: string | null;
+}
+
+export interface TenantInfo {
+  id: string;
+  name: string;
+  slug: string;
+  logoUrl: string | null;
+  createdAt: string;
 }
 
 export interface User {
@@ -29,9 +38,24 @@ export interface LoginCredentials {
   password: string;
 }
 
-export interface RegisterCredentials {
+export interface AccessRequestFormData {
   name: string;
   email: string;
-  password: string;
-  tenantName: string;
+  message?: string;
+  tenantId?: string;
+  newTenantName?: string;
+}
+
+export interface AccessRequest {
+  id: string;
+  name: string;
+  email: string;
+  message: string | null;
+  tenantId: string | null;
+  tenantName: string | null;
+  newTenantName: string | null;
+  status: 'pending' | 'approved' | 'rejected';
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  createdAt: string;
 }

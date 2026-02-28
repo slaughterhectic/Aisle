@@ -47,6 +47,14 @@ let KnowledgeController = class KnowledgeController {
             updatedAt: doc.updatedAt,
         };
     }
+    async getContent(tenant, id, download, res) {
+        const { stream, document } = await this.knowledgeService.getDocumentStream(tenant, id);
+        res.set({
+            'Content-Type': document.mimeType,
+            'Content-Disposition': `${download ? 'attachment' : 'inline'}; filename="${document.filename}"`,
+        });
+        stream.pipe(res);
+    }
     async remove(tenant, id) {
         return this.knowledgeService.remove(tenant, id);
     }
@@ -54,7 +62,7 @@ let KnowledgeController = class KnowledgeController {
 exports.KnowledgeController = KnowledgeController;
 __decorate([
     (0, common_1.Post)('upload'),
-    (0, roles_decorator_1.Roles)(tenant_context_interface_1.UserRole.ADMIN, tenant_context_interface_1.UserRole.MANAGER),
+    (0, roles_decorator_1.Roles)(tenant_context_interface_1.UserRole.ADMIN),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
     __param(0, (0, tenant_decorator_1.Tenant)()),
     __param(1, (0, common_1.Body)()),
@@ -79,6 +87,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], KnowledgeController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)(':id/content'),
+    __param(0, (0, tenant_decorator_1.Tenant)()),
+    __param(1, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
+    __param(2, (0, common_1.Query)('download')),
+    __param(3, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, Boolean, Object]),
+    __metadata("design:returntype", Promise)
+], KnowledgeController.prototype, "getContent", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     (0, roles_decorator_1.Roles)(tenant_context_interface_1.UserRole.ADMIN),

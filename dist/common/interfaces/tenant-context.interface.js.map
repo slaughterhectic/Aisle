@@ -1,1 +1,1 @@
-{"version":3,"file":"tenant-context.interface.js","sourceRoot":"","sources":["../../../src/common/interfaces/tenant-context.interface.ts"],"names":[],"mappings":";;;AAsBA,IAAY,QASX;AATD,WAAY,QAAQ;IAElB,2BAAe,CAAA;IAGf,+BAAmB,CAAA;IAGnB,yBAAa,CAAA;AACf,CAAC,EATW,QAAQ,wBAAR,QAAQ,QASnB"}
+{"version":3,"file":"tenant-context.interface.js","sourceRoot":"","sources":["../../../src/common/interfaces/tenant-context.interface.ts"],"names":[],"mappings":";;;AAsBA,IAAY,QASX;AATD,WAAY,QAAQ;IAElB,uCAA2B,CAAA;IAG3B,2BAAe,CAAA;IAGf,yBAAa,CAAA;AACf,CAAC,EATW,QAAQ,wBAAR,QAAQ,QASnB"}

@@ -83,6 +83,11 @@ let KnowledgeService = KnowledgeService_1 = class KnowledgeService {
         }
         return document;
     }
+    async getDocumentStream(tenant, id) {
+        const document = await this.findOne(tenant, id);
+        const stream = await this.storageService.getFileStream(document.s3Key);
+        return { stream, document };
+    }
     async remove(tenant, id) {
         const document = await this.findOne(tenant, id);
         await this.chunkRepository.delete({ documentId: id, tenantId: tenant.tenantId });

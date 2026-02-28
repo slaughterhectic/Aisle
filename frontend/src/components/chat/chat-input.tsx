@@ -83,7 +83,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
       </form>
       <div className="text-center mt-3 max-w-4xl mx-auto">
         <p className="text-[11px] text-slate-400 font-medium tracking-wide">
-          Aisle AI might generate inaccurate information. Please verify important details.
+          Multi Tenant Chat might generate inaccurate information. Please verify important details.
         </p>
       </div>
     </div>

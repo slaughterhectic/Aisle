@@ -1,25 +1,16 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterDto, LoginDto, RefreshTokenDto, AuthResponse } from './dto/auth.dto';
+import { LoginDto, RefreshTokenDto, AuthResponse } from './dto/auth.dto';
 import { Public } from '../../common/decorators/public.decorator';
 
 /**
  * Authentication Controller
- * Handles public auth endpoints for registration and login.
+ * Handles public auth endpoints for login and token refresh.
+ * Registration has been replaced by the Access Request flow.
  */
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  /**
-   * Register a new user
-   * POST /auth/register
-   */
-  @Public()
-  @Post('register')
-  async register(@Body() dto: RegisterDto): Promise<AuthResponse> {
-    return this.authService.register(dto);
-  }
 
   /**
    * User login

@@ -37,7 +37,7 @@ let UsageController = class UsageController {
 exports.UsageController = UsageController;
 __decorate([
     (0, common_1.Get)('summary'),
-    (0, roles_decorator_1.Roles)(tenant_context_interface_1.UserRole.ADMIN, tenant_context_interface_1.UserRole.MANAGER),
+    (0, roles_decorator_1.Roles)(tenant_context_interface_1.UserRole.ADMIN),
     __param(0, (0, tenant_decorator_1.Tenant)()),
     __param(1, (0, common_1.Query)('startDate')),
     __param(2, (0, common_1.Query)('endDate')),
@@ -47,7 +47,7 @@ __decorate([
 ], UsageController.prototype, "getSummary", null);
 __decorate([
     (0, common_1.Get)('assistants/:id'),
-    (0, roles_decorator_1.Roles)(tenant_context_interface_1.UserRole.ADMIN, tenant_context_interface_1.UserRole.MANAGER),
+    (0, roles_decorator_1.Roles)(tenant_context_interface_1.UserRole.ADMIN),
     __param(0, (0, tenant_decorator_1.Tenant)()),
     __param(1, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     __param(2, (0, common_1.Query)('startDate')),

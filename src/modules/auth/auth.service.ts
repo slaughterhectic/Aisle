@@ -23,7 +23,7 @@ export class AuthService {
     private readonly tenantRepository: Repository<Tenant>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   /**
    * Register a new user
@@ -66,12 +66,12 @@ export class AuthService {
       await this.tenantRepository.save(tenant);
     }
 
-    // Check if user already exists in this tenant
+    // Check if user already exists (email is globally unique)
     const existingUser = await this.userRepository.findOne({
-      where: { tenantId: tenant.id, email: dto.email },
+      where: { email: dto.email },
     });
     if (existingUser) {
-      throw new ConflictException('User with this email already exists in this tenant');
+      throw new ConflictException('A user with this email already exists. Each email can only be associated with one account.');
     }
 
     // Hash password

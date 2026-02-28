@@ -30,7 +30,7 @@ export class AssistantsController {
    * Required role: ADMIN or MANAGER
    */
   @Post()
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @Roles(UserRole.ADMIN)
   async create(
     @Tenant() tenant: TenantContext,
     @Body() dto: CreateAssistantDto,
@@ -65,7 +65,7 @@ export class AssistantsController {
    * Required role: ADMIN or MANAGER
    */
   @Patch(':id')
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @Roles(UserRole.ADMIN)
   async update(
     @Tenant() tenant: TenantContext,
     @Param('id', ParseUUIDPipe) id: string,

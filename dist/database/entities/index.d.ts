@@ -6,3 +6,4 @@ export * from './message.entity';
 export * from './document.entity';
 export * from './document-chunk.entity';
 export * from './usage-log.entity';
+export * from './access-request.entity';

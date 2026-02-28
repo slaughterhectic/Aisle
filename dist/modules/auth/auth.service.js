@@ -99,10 +99,10 @@ let AuthService = class AuthService {
             await this.tenantRepository.save(tenant);
         }
         const existingUser = await this.userRepository.findOne({
-            where: { tenantId: tenant.id, email: dto.email },
+            where: { email: dto.email },
         });
         if (existingUser) {
-            throw new common_1.ConflictException('User with this email already exists in this tenant');
+            throw new common_1.ConflictException('A user with this email already exists. Each email can only be associated with one account.');
         }
         const passwordHash = await bcrypt.hash(dto.password, 12);
         const isFirstUser = !dto.tenantSlug;

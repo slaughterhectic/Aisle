@@ -18,7 +18,7 @@ export class UsageController {
    * Required role: ADMIN or MANAGER
    */
   @Get('summary')
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @Roles(UserRole.ADMIN)
   async getSummary(
     @Tenant() tenant: TenantContext,
     @Query('startDate') startDate?: string,
@@ -35,7 +35,7 @@ export class UsageController {
    * Required role: ADMIN or MANAGER
    */
   @Get('assistants/:id')
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @Roles(UserRole.ADMIN)
   async getAssistantUsage(
     @Tenant() tenant: TenantContext,
     @Param('id', ParseUUIDPipe) id: string,
